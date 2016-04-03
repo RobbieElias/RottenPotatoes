@@ -9,11 +9,11 @@ DROP TABLE actorPlays CASCADE;
 DROP TABLE role CASCADE;
 
 CREATE TABLE movieUser (
-   userID             int  not null,
-   password           text not null,
-   lastname           text,   
-   firstname          text,
-   email              text,
+   userID             SERIAL,
+   password           text NOT NULL,
+   lastname           text NOT NULL,   
+   firstname          text NOT NULL,
+   email              text NOT NULL UNIQUE,
    city               text,
    province           text,
    country            text,
@@ -31,7 +31,7 @@ CREATE TABLE profile (
 );
 
 CREATE TABLE movie (
-   movieID           int not null,
+   movieID           SERIAL,
    ageRange          int,
    yearBorn          int,   
    gender            text,
@@ -49,7 +49,7 @@ CREATE TABLE watches (
 );
 
 CREATE TABLE topics (
-   topicID           int NOT NULL,
+   topicID           SERIAL,
    description       text,
    PRIMARY KEY (topicId)
 );
@@ -64,7 +64,7 @@ CREATE TABLE movieTopics (
 );
 
 CREATE TABLE studio (
-   studioID          int NOT NULL,
+   studioID          SERIAL,
    name              text,  
    country           text,
    PRIMARY KEY (studioId)
@@ -77,7 +77,7 @@ CREATE TABLE sponsors (
  );
 
 CREATE TABLE director (
-   directorID        int NOT NULL,
+   directorID        SERIAL,
    lastName          text,  
    dateOfBirth       date,
    PRIMARY KEY (directorId)
@@ -90,7 +90,7 @@ CREATE TABLE directs (
 );
 
 CREATE TABLE actor (
-   actorID           int NOT NULL,
+   actorID           SERIAL,
    lastName          text,  
    firstname         text,
    dateOfBirth       date,
@@ -104,7 +104,7 @@ CREATE TABLE actorPlays (
 );
 
 CREATE TABLE role (
-   roleID            int,
+   roleID            SERIAL,
    actorID           int REFERENCES actor(actorID) ON DELETE CASCADE,
    name              text,
    PRIMARY KEY (roleID)
