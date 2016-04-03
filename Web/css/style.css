@@ -30,8 +30,18 @@ body {
 	color: #fff;
 }
 
+@media (max-width: 767px) {
+	.dropdown-menu > li > a {
+		color: #fff;
+	}
+}
+
 .nav > li > a:hover, .nav > li > a:focus, .nav > li > a.active {
 	background: #723939;
+}
+
+.nav .open>a, .nav .open>a:focus, .nav .open>a:hover {
+	background: #723939;	
 }
 
 .btn-success {
@@ -40,7 +50,7 @@ body {
     border-color: #497468;
 }
 
-.btn-success.focus, .btn-success:focus, .btn-success:hover {
+.btn-success.focus, .btn-success:focus, .btn-success:hover, .btn-success.active.focus, .btn-success.active:focus, .btn-success.active:hover, .btn-success:active.focus, .btn-success:active:focus, .btn-success:active:hover, .open>.dropdown-toggle.btn-success.focus, .open>.dropdown-toggle.btn-success:focus, .open>.dropdown-toggle.btn-success:hover {
 	background-color: #497468;
 	border-color: #497468;
 }

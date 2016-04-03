@@ -9,7 +9,59 @@ require "./includes/Db.class.php";
 # create a database object
 $db = new Db();
 
-var_dump($_POST);
+$registered = false;
+
+if (isset($_POST['register'])) {
+
+    $email = isset($_POST['email']) ? trim($_POST['email']) : null;
+    $name = isset($_POST['name']) ? trim($_POST['name']) : null;
+    $password = isset($_POST['password']) ? trim($_POST['password']) : null;
+    $country = filterString(trim($_POST['country']), 100);
+    $province = filterString(trim($_POST['province']), 100);
+    $city = filterString(trim($_POST['city']), 100);
+
+    if (validateEmail($email) && validateName($name) && validatePassword($password)) {
+
+        list($firstname, $lastname) = explode(' ', $name);
+        $insert = $db->query("INSERT INTO movieuser(password,lastname,firstname,email,city,province,country) VALUES(:password,:lastname,:firstname,:email,:city,:province,:country)", array('password'=>$password,'lastname'=>$lastname,'firstname'=>$firstname,'email'=>$email,'city'=>$city,'province'=>$province,'country'=>$country));
+
+        if ($insert > 0) {
+            $_SESSION['userid'] = $db->lastInsertId();
+            $_SESSION['firstname'] = $firstname;
+            $registered = $loggedIn = true;
+        }
+
+    }
+
+}
+
+function validateEmail($email) {
+    if (empty($email) || strlen($email) > 150 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return false;
+    }
+    return true;
+}
+
+function validateName($name) {
+    if (empty($name) || strlen($name) > 200 || !preg_match("/(\w+)( )(\w+)/", $name)) {
+        return false;
+    }
+    return true;
+}
+
+function validatePassword($password) {
+    if (empty($password) || strlen($password) > 20) {
+        return false;
+    }
+    return true;
+}
+
+function filterString($string, $maxLength) {
+    if (empty($string) || strlen($string) > $maxLength) {
+        return null;
+    }
+    return $string;
+}
 
 ?>
 
@@ -24,9 +76,10 @@ var_dump($_POST);
   </head>
   <body>
     <?php include 'includes/header.php';?>
+    <?php if (!$registered) { ?>
     <div class="container page-register">
         <h1>Register</h1>
-        <form id="loginForm" method="post" data-toggle="validator" role="form">
+        <form id="registerForm" method="post" data-toggle="validator" role="form">
             <div class="form-group">
                 <label class="control-label">Email Address*</label>
                 <input id="email" type="email" class="form-control" name="email" maxlength="150" required />
@@ -34,7 +87,7 @@ var_dump($_POST);
             </div>
             <div class="form-group">
                 <label class="control-label">Name*</label>
-                <input id="name" type="text" class="form-control" name="name" maxlength="200" required />
+                <input id="name" type="text" class="form-control" name="name" maxlength="200" pattern="(\w+)( )(\w+)" required />
                 <div class="help-block with-errors"></div>
             </div>
             <div class="form-group">
@@ -314,6 +367,13 @@ var_dump($_POST);
             </div>
         </form>
     </div>
+    <?php } else { ?>
+    <h2 class="text-center">You are now registered to <strong>Rotten Potatoes</strong>!</h2>
+    <p class="text-center">
+        <a class="btn btn-default" href="index.php" role="button">Home</a>
+        <a class="btn btn-default" href="profile.php" role="button">Manage Profile</a>
+    </p>
+    <?php } ?>
     <?php include 'includes/footer.php';?>
     <?php include 'includes/scripts.php';?>
     <script src="js/validator.min.js"></script>

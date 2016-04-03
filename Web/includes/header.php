@@ -12,8 +12,21 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="index.php">Home</a></li>
+                <?php if (!$loggedIn) { ?>
                 <li><a href="#login" data-toggle="modal" data-target="#loginModal">Login</a></li>
                 <li><a href="register.php">Register</a></li>
+                <?php } else { ?>
+                <li role="presentation" class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        <?php echo $_SESSION['firstname']; ?>  <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="profile.php">View Profile</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="index.php?logout=true">Logout</a></li> 
+                    </ul>
+                </li>
+                <?php } ?>
             </ul>
         </div>
     </div>
@@ -28,24 +41,24 @@
             </div>
 
             <div class="modal-body">
-                <form id="loginForm" method="post" class="form-horizontal">
+                <form id="loginForm" method="post" action="index.php" class="form-horizontal">
                     <div class="form-group">
                         <label class="col-xs-3 control-label">Email</label>
-                        <div class="col-xs-5">
+                        <div class="col-xs-6">
                             <input id="login-email" type="email" class="form-control" name="email" maxlength="150" required />
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-xs-3 control-label">Password</label>
-                        <div class="col-xs-5">
+                        <div class="col-xs-6">
                             <input id="login-password" type="password" class="form-control" name="password" maxlength="20" required />
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <div class="col-xs-5 col-xs-offset-3">
-                            <button id="btn-login" type="submit" class="btn btn-primary">Login</button>
+                        <div class="col-xs-6 col-xs-offset-3">
+                            <input id="btn-login" type="submit" class="btn btn-primary" name="login" value="Login" />
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                         </div>
                     </div>

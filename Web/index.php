@@ -9,7 +9,30 @@ require "./includes/Db.class.php";
 # create a database object
 $db = new Db();
 
-$test = $db->query('SELECT id, name FROM test');
+if (isset($_POST['login'])) {
+
+    $email = isset($_POST['email']) ? trim($_POST['email']) : null;
+    $password = isset($_POST['password']) ? trim($_POST['password']) : null;
+
+    $db->bindMore(array('email' => $email, 'password' => $password));
+    $user = $db->row('SELECT userid, firstname FROM movieuser WHERE email = :email AND password = :password');
+
+	if (!empty($user)) {
+		$loggedIn = true;
+		$_SESSION['userid'] = $user['userid'];
+		$_SESSION['firstname'] = $user['firstname'];
+		header('Location: index.php');
+	}
+
+}
+else if (isset($_GET['logout'])) {
+
+    // remove all session variables
+    session_unset(); 
+    session_destroy();
+	$loggedIn = false;
+
+}
 
 ?>
 
@@ -30,9 +53,11 @@ $test = $db->query('SELECT id, name FROM test');
                 <span class="glyphicon glyphicon-film" aria-hidden="true"></span>
             </p>
             <h2>Movie recommendations for all you couch <strong>potatoes</strong></h2>
+            <?php if (!$loggedIn) { ?>
             <p>
-                <a class="btn btn-success btn-lg" href="#" role="button">Register &raquo;</a>
+                <a class="btn btn-success btn-lg" href="register.php" role="button">Register &raquo;</a>
             </p>
+            <?php } ?>
         </div>
     </div>
     <div class="container">
