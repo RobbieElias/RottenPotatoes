@@ -5,14 +5,6 @@ SET search_path TO 'MovieRecommender';
 DROP TABLE movieUser CASCADE;
 DROP TABLE profile;
 DROP TABLE movie CASCADE;
-DROP TABLE watches;
-DROP TABLE topics CASCADE;
-DROP TABLE movieTopics CASCADE;
-DROP TABLE studio CASCADE;
-DROP TABLE sponsors CASCADE;
-DROP TABLE director CASCADE;
-DROP TABLE directs CASCADE;
-DROP TABLE actor CASCADE;
 DROP TABLE actorPlays CASCADE;
 DROP TABLE role CASCADE;
 
