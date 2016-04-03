@@ -1,0 +1,62 @@
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+
+.navbar {
+    background: #8C4646;
+    border-color: #3e1f1f;
+}
+
+.navbar-brand {
+	color: #fff;
+	font-size: 1.6em;
+}
+
+.navbar-brand:hover, .navbar-brand:focus {
+	color: #fff;
+}
+
+#nav-logo {
+	width: 260px;
+	margin-top: -3px;
+}
+
+.navbar-toggle .icon-bar {
+	background-color: #fff;
+}
+
+.nav > li > a {
+	color: #fff;
+}
+
+.nav > li > a:hover, .nav > li > a:focus, .nav > li > a.active {
+	background: #723939;
+}
+
+.btn-success {
+    color: #fff;
+    background-color: #588C7E;
+    border-color: #497468;
+}
+
+.btn-success.focus, .btn-success:focus, .btn-success:hover {
+	background-color: #497468;
+	border-color: #497468;
+}
+
+.jumbotron > .container {
+	text-align: center;
+}
+
+.jumbotron .glyphicon-film {
+	font-size: 4em;
+}
+
+.jumbotron h2 {
+	margin: 30px 0;
+}
+
+.page-register {
+	max-width: 600px;
+}
