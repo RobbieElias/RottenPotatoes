@@ -67,6 +67,10 @@ body {
 	margin: 30px 0;
 }
 
-.page-register {
+.page-register, .page-login {
 	max-width: 600px;
+}
+
+#loginForm, #registerForm {
+	margin-top: 20px;
 }

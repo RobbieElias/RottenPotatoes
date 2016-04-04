@@ -9,23 +9,7 @@ require "./includes/Db.class.php";
 # create a database object
 $db = new Db();
 
-if (isset($_POST['login'])) {
-
-    $email = isset($_POST['email']) ? trim($_POST['email']) : null;
-    $password = isset($_POST['password']) ? trim($_POST['password']) : null;
-
-    $db->bindMore(array('email' => $email, 'password' => $password));
-    $user = $db->row('SELECT userid, firstname FROM movieuser WHERE email = :email AND password = :password');
-
-	if (!empty($user)) {
-		$loggedIn = true;
-		$_SESSION['userid'] = $user['userid'];
-		$_SESSION['firstname'] = $user['firstname'];
-		header('Location: index.php');
-	}
-
-}
-else if (isset($_GET['logout'])) {
+if (isset($_GET['logout'])) {
 
     // remove all session variables
     session_unset(); 

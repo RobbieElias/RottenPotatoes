@@ -10,6 +10,7 @@ require "./includes/Db.class.php";
 $db = new Db();
 
 $registered = false;
+$message = null;
 
 if (isset($_POST['register'])) {
 
@@ -22,13 +23,18 @@ if (isset($_POST['register'])) {
 
     if (validateEmail($email) && validateName($name) && validatePassword($password)) {
 
-        list($firstname, $lastname) = explode(' ', $name);
-        $insert = $db->query("INSERT INTO movieuser(password,lastname,firstname,email,city,province,country) VALUES(:password,:lastname,:firstname,:email,:city,:province,:country)", array('password'=>$password,'lastname'=>$lastname,'firstname'=>$firstname,'email'=>$email,'city'=>$city,'province'=>$province,'country'=>$country));
+        try {
+            list($firstname, $lastname) = explode(' ', $name);
+            $insert = $db->query("INSERT INTO movieuser(password,lastname,firstname,email,city,province,country) VALUES(:password,:lastname,:firstname,:email,:city,:province,:country)", array('password'=>$password,'lastname'=>$lastname,'firstname'=>$firstname,'email'=>$email,'city'=>$city,'province'=>$province,'country'=>$country));
 
-        if ($insert > 0) {
-            $_SESSION['userid'] = $db->lastInsertId();
-            $_SESSION['firstname'] = $firstname;
-            $registered = $loggedIn = true;
+            if ($insert > 0) {
+                $_SESSION['userid'] = $db->lastInsertId('movieuser_userid_seq');
+                $_SESSION['firstname'] = $firstname;
+                $registered = $loggedIn = true;
+            }
+        }
+        catch (PDOException $e) {
+            $message = 'Sorry, this email is already in use.';
         }
 
     }
@@ -366,6 +372,7 @@ function filterString($string, $maxLength) {
                 <input id="btn-register" type="submit" class="btn btn-success" name="register" value="Register" />
             </div>
         </form>
+        <?php if (!empty($message)) echo '<p id="error-message" class="text-danger">' . $message . '</p>'; ?>
     </div>
     <?php } else { ?>
     <h2 class="text-center">You are now registered to <strong>Rotten Potatoes</strong>!</h2>
