@@ -40,11 +40,9 @@ CREATE TABLE profile (
 
 CREATE TABLE movie (
    movieID           SERIAL,
-   ageRange          int,
-   yearBorn          int,   
-   gender            text,
-   occupation        text,
-   deviceUsed        text,
+   name              text,
+   dateReleased      int,
+   posterUrl         text,
    PRIMARY KEY (movieID)
 );
 

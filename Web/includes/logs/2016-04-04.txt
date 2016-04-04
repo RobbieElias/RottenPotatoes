@@ -1,0 +1,10 @@
+Time : 16:24:40
+SQLSTATE[42703]: Undefined column: 7 ERROR:  column "firstname" does not exist
+LINE 1: SELECT name, firstname FROM movie
+                     ^
+Raw SQL : SELECT name, firstname FROM movie
+
+Time : 16:16:38
+SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column "password" violates not-null constraint
+DETAIL:  Failing row contains (1, null, null, null, null, null, null, null).
+Raw SQL : INSERT INTO movieuser(password,lastname,firstname,email,city,province,country) VALUES(:password,:lastname,:firstname,:email,:city,:province,:country)
