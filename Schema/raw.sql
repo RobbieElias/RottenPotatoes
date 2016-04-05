@@ -5,14 +5,6 @@ SET search_path TO 'MovieRecommender';
 DROP TABLE movieUser CASCADE;
 DROP TABLE profile;
 DROP TABLE movie CASCADE;
-DROP TABLE watches;
-DROP TABLE topics CASCADE;
-DROP TABLE movieTopics CASCADE;
-DROP TABLE studio CASCADE;
-DROP TABLE sponsors CASCADE;
-DROP TABLE director CASCADE;
-DROP TABLE directs CASCADE;
-DROP TABLE actor CASCADE;
 DROP TABLE actorPlays CASCADE;
 DROP TABLE role CASCADE;
 
@@ -40,11 +32,9 @@ CREATE TABLE profile (
 
 CREATE TABLE movie (
    movieID           SERIAL,
-   ageRange          int,
-   yearBorn          int,   
-   gender            text,
-   occupation        text,
-   deviceUsed        text,
+   name              text,
+   dateReleased      int,
+   posterUrl         text,
    PRIMARY KEY (movieID)
 );
 
@@ -92,15 +82,14 @@ CREATE TABLE director (
 ); 
 
 CREATE TABLE directs (
-   studioID          int REFERENCES studio(studioID) ON DELETE CASCADE,
+   movieID          int REFERENCES movie(movieID) ON DELETE CASCADE,
    directorID        int REFERENCES director(directorID) ON DELETE CASCADE,
-   PRIMARY KEY (studioId,directorID)
+   PRIMARY KEY (movieId,directorID)
 );
 
 CREATE TABLE actor (
    actorID           SERIAL,
-   lastName          text,  
-   firstname         text,
+   name              text,  
    dateOfBirth       date,
    PRIMARY KEY (actorId)
 );
