@@ -90,15 +90,14 @@ CREATE TABLE director (
 ); 
 
 CREATE TABLE directs (
-   studioID          int REFERENCES studio(studioID) ON DELETE CASCADE,
+   movieID          int REFERENCES movie(movieID) ON DELETE CASCADE,
    directorID        int REFERENCES director(directorID) ON DELETE CASCADE,
-   PRIMARY KEY (studioId,directorID)
+   PRIMARY KEY (movieId,directorID)
 );
 
 CREATE TABLE actor (
    actorID           SERIAL,
-   lastName          text,  
-   firstname         text,
+   name              text,  
    dateOfBirth       date,
    PRIMARY KEY (actorId)
 );
