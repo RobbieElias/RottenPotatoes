@@ -59,7 +59,7 @@ body {
 	text-align: center;
 }
 
-.jumbotron .glyphicon-film {
+.jumbotron .glyphicon-film, .jumbotron .glyphicon-info-sign {
 	font-size: 4em;
 }
 
@@ -67,6 +67,16 @@ body {
 	margin: 30px 0;
 }
 
-.page-register {
+.page-register, .page-login {
 	max-width: 600px;
+}
+
+#loginForm, #registerForm {
+	margin-top: 20px;
+}
+
+footer a {
+	margin-left: 10px;
+    padding-left: 10px;
+    border-left: solid 1px #a3a3a3;
 }

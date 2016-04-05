@@ -134,7 +134,7 @@ class DB
         catch (PDOException $e) {
             # Write into log and display Exception
             echo $this->ExceptionLog($e->getMessage(), $query);
-            die();
+            throw $e;
         }
         
         # Reset the parameters
@@ -200,9 +200,9 @@ class DB
      *  Returns the last inserted id.
      *  @return string
      */
-    public function lastInsertId()
+    public function lastInsertId($name)
     {
-        return $this->pdo->lastInsertId();
+        return $this->pdo->lastInsertId($name);
     }
     
     /**
