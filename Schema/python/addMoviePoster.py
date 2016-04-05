@@ -7,26 +7,21 @@ def getMovie(name):
 	movie = omdb.title(name)
 	return movie;
 
-def createActors(movieID):
-	actors = []
-	try:
-		actors = movie.actors.split(',')
-	except:
-		actors = []
-	if len(actors) > 0:
-		for actor in actors:
-			name = actor.strip()
-			name = name.replace('\'','\'\'')
-			print name
-			cur.execute("INSERT INTO actor (name) \
-         	 VALUES ('%s')" % (name))
+def addPoster(movieID):
+		poster = 'n/a'
+		try:
+			poster = str(movie.poster)
+		except:
+			poster = 'n/a'
+		print poster
+		cur.execute("UPDATE movie SET posterUrl=%s WHERE movieID = (%s)", (poster,movieID));
 
 
 # connect to the project database
 conn = psycopg2.connect(database="CSI2132", user="csi2132", password="csi2132", host="159.203.44.157", port="5432")
 print "Opened database successfully"
 
-#variables for the movie
+#fill the database for a movie
 movieName = ''
 movieID = ''
 
@@ -38,7 +33,7 @@ for row in rows:
 	movieID = row[0]
 	movieName = row[1]
 	movie = getMovie(movieName)
-	createActors(movieID)
+	addPoster(movieID)
 
 conn.commit()
 conn.close()

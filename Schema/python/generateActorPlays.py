@@ -18,13 +18,13 @@ def getActorID(name):
 def createActorPlays(movieID):
 	actors = []
 	try:
-		actors = movie.actors.split(',')
+		actors = movie.actors.split(',') #can return multiple actors seperated by a ','
 	except:
 		actors = []
 	if len(actors) > 0:
 		for actor in actors:
-			name = actor.strip()
-			name = name.replace('\'','\'\'')
+			name = actor.strip() # remove white space
+			name = name.replace('\'','\'\'') # escape quotes for the db
 			actorID = getActorID(name)
 			print str(actorID) + '-' + str(movieID)
 			cur.execute("INSERT INTO actorPlays (movieID,actorID) \
@@ -35,7 +35,7 @@ def createActorPlays(movieID):
 conn = psycopg2.connect(database="CSI2132", user="csi2132", password="csi2132", host="159.203.44.157", port="5432")
 print "Opened database successfully"
 
-#fill the database for a movie
+# initialize some variables for the movie
 movieName = ''
 movieID = ''
 

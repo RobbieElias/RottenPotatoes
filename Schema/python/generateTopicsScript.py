@@ -1,5 +1,5 @@
 #generate the scripts to create topics
-
+#this generates a console output that can be copied into the seed file
 f = open('stored250.txt', 'r')
 genreList = ['horror','action']
 

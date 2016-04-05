@@ -1,4 +1,5 @@
-#generate the scripts to create topics
+#generate the scripts to create directors
+#this generates a console output that can be copied into the seed file
 
 f = open('stored250.txt', 'r')
 directorList = ['horror','action']

@@ -36,7 +36,7 @@ def createDirects(movieID):
 conn = psycopg2.connect(database="CSI2132", user="csi2132", password="csi2132", host="159.203.44.157", port="5432")
 print "Opened database successfully"
 
-#fill the database for a movie
+# initialize some variables
 movieName = ''
 movieID = ''
 
