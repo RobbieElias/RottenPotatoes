@@ -3,6 +3,14 @@ body {
   padding-bottom: 20px;
 }
 
+a {
+	color: #8c4646;
+}
+
+a:focus, a:hover {
+	color: #723939;
+}
+
 .navbar {
     background: #8C4646;
     border-color: #3e1f1f;
@@ -90,7 +98,7 @@ footer a {
 	margin-bottom: 4px;
 }
 
-.movie-thumbnail a {
+.movie-thumbnail .movie-title {
 	color: #000;
 }
 
@@ -108,6 +116,35 @@ footer a {
 
 .movie-thumbnail .rating-label {
 	font-size: 1em;
-	padding: 3px 0 0 5px;
+	padding: 5px 0 0 5px;
 	font-weight: bold;
+}
+
+.thumbnail .user-rating {
+	clear: both;
+    padding-top: 6px;
+	overflow: hidden;
+  	text-overflow: ellipsis;
+  	white-space: nowrap;
+}
+
+.top-list-title {
+	margin-bottom: 18px;
+}
+
+.top-list .badge {
+	background-color: #8C4646;
+}
+
+.caption h4 {
+	overflow: hidden;
+  	text-overflow: ellipsis;
+  	white-space: nowrap;
+}
+
+.list-group-item a {
+	display: block;
+	overflow: hidden;
+  	text-overflow: ellipsis;
+  	white-space: nowrap;
 }
