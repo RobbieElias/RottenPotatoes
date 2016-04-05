@@ -18,6 +18,8 @@ if (isset($_GET['logout'])) {
 
 }
 
+$topMovies = $db->query('SELECT movieid, name, datereleased, posterurl FROM movie LIMIT 8');
+
 ?>
 
 </body>
@@ -45,23 +47,25 @@ if (isset($_GET['logout'])) {
         </div>
     </div>
     <div class="container">
-        <!-- Example row of columns -->
         <div class="row">
-            <div class="col-md-4">
-                <h2>Heading</h2>
-                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+            <div class="col-md-12">
+                <h2>Top Movies</h2>
             </div>
-            <div class="col-md-4">
-                <h2>Heading</h2>
-                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="row">
+            <?php foreach ($topMovies as $movie) { ?>
+            <div class="col-md-3">
+                    <div class="thumbnail movie-thumbnail">
+                        <a class="movie-poster" href="movie.php?id=<?php echo $movie['movieid'] ?>" style="background-image: url('<?php echo $movie['posterurl'] ?>')"></a>
+                        <div class="caption">
+                            <h4><a href="movie.php?id=<?php echo $movie['movieid'] ?>"><?php echo $movie['name'] ?></a></h4>
+                            <p><?php echo $movie['datereleased'] ?></p>
+                            <input id="input-id" type="text" class="rating" data-size="xs" data-step="1" data-show-clear="false" data-display-only="true" value="4">
+                            <div class="rating-label pull-left">4.5/5</div>
+                        </div>
+                    </div>
             </div>
-            <div class="col-md-4">
-                <h2>Heading</h2>
-                <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-                <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-            </div>
+            <?php } ?>
         </div>
     </div>
     <?php include 'includes/footer.php';?>
