@@ -63,7 +63,7 @@ CREATE TABLE movieTopics (
 
 CREATE TABLE studio (
    studioID          SERIAL,
-   name              text,  
+   name              text UNIQUE,  
    country           text,
    PRIMARY KEY (studioId)
 );
@@ -76,20 +76,20 @@ CREATE TABLE sponsors (
 
 CREATE TABLE director (
    directorID        SERIAL,
-   lastName          text,  
+   name              text UNIQUE,  
    dateOfBirth       date,
    PRIMARY KEY (directorId)
 ); 
 
 CREATE TABLE directs (
-   movieID          int REFERENCES movie(movieID) ON DELETE CASCADE,
+   movieID           int REFERENCES movie(movieID) ON DELETE CASCADE,
    directorID        int REFERENCES director(directorID) ON DELETE CASCADE,
    PRIMARY KEY (movieId,directorID)
 );
 
 CREATE TABLE actor (
    actorID           SERIAL,
-   name              text,  
+   name              text UNIQUE,  
    dateOfBirth       date,
    PRIMARY KEY (actorId)
 );

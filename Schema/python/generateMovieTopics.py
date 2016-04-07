@@ -26,8 +26,20 @@ def createMovieTopics(movieID):
 	rows2 = cur.fetchall()
 	for row in rows2:
 		topicID = row[0]
-	cur.execute("INSERT INTO MovieTopics (topicID,movieID,language,subtitles,country) \
-      VALUES ('%s', '%s', 'English', 'yes', '%s' )" % (topicID,movieID,country))
+	part1 = "INSERT INTO movieTopics(topicID,movieID,language,subtitles,country) VALUES (\'"
+	part2 = str(topicID)
+	part3 = "\',\'"
+	part4 = str(movieID)
+	part5 = "\',\'"
+	part6 = "English"
+	part7 = "\',\'"
+	part8 = "Yes"
+	part9 = "\',\'"
+	part10 = country
+	part11 = "\');"
+	print part1+part2+part3+part4+part5+part6+part7+part8+part9+part10+part11
+	#cur.execute("INSERT INTO MovieTopics (topicID,movieID,language,subtitles,country) \
+    #  VALUES ('%s', '%s', 'English', 'yes', '%s' )" % (topicID,movieID,country))
 
 
 
