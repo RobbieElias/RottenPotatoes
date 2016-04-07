@@ -63,6 +63,19 @@ a:focus, a:hover {
 	border-color: #497468;
 }
 
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+	background-color: #497468;
+	border-color: #497468;
+}
+
+.pagination>li>a, .pagination>li>span {
+	color: #8c4646;
+}
+
+.pagination>li>a:focus, .pagination>li>a:hover, .pagination>li>span:focus, .pagination>li>span:hover {
+	color: #723939;
+}
+
 .jumbotron > .container {
 	text-align: center;
 }
@@ -126,6 +139,10 @@ footer a {
 	overflow: hidden;
   	text-overflow: ellipsis;
   	white-space: nowrap;
+}
+
+.rating-loading{
+	background:url(../images/loading.gif) top left no-repeat;
 }
 
 .top-list-title {
@@ -232,4 +249,31 @@ td .glyphicon-star {
 
 .info-margin {
     margin: 4px 0;
+}
+
+.sort-container {
+	margin-bottom: 4px;
+}
+
+.movie-row {
+	cursor: pointer;
+}
+
+.genre-container {
+	padding: 10px 0;
+}
+
+.genre-container > a {
+	font-size: 1.3em;
+	text-transform: capitalize;
+	line-height: 1em;
+}
+
+.genre-container > span {
+	font-size: 0.8em;
+	font-weight: bold;
+}
+
+.title-view-all {
+	font-size: 0.4em;
 }

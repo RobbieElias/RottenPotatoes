@@ -18,9 +18,10 @@ if (isset($_GET['logout'])) {
 
 }
 
-$topMovies = $db->query('SELECT movieid, name, datereleased, posterurl FROM movie LIMIT 8');
+$topMovies = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posterurl, (SELECT coalesce(AVG(w.rating), 0) FROM watches w WHERE w.movieid = m.movieid) rating FROM movie m ORDER BY rating DESC, name LIMIT 8');
 
-$recentlyRated = $db->query('SELECT movieid, name, datereleased, posterurl FROM movie LIMIT 4');
+$recentlyRated = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posterurl, w.rating, u.userid, u.firstname, u.lastname FROM movie m JOIN watches w ON m.movieid = w.movieid JOIN movieuser u ON w.userid = u.userid WHERE w.rating IS NOT NULL ORDER BY datewatched DESC LIMIT 4');
+
 
 $topActors = $db->query('SELECT actorid, name FROM actor LIMIT 10');
 $topDirectors = $db->query('SELECT directorid, name AS name FROM director LIMIT 10');
@@ -66,8 +67,8 @@ $topGenres = $db->query('SELECT topicid, description FROM topics LIMIT 10');
                         <div class="caption">
                             <h4><a class="movie-title" href="movie.php?id=<?php echo $movie['movieid'] ?>"><?php echo $movie['name'] ?></a></h4>
                             <p><?php echo $movie['datereleased'] ?></p>
-                            <input type="text" class="rating" data-size="xs" data-step="1" data-show-clear="false" data-display-only="true" value="4">
-                            <div class="rating-label pull-left">4.5/5</div>
+                            <input type="text" class="rating" data-size="xs" data-step="1" data-show-clear="false" data-display-only="true" value="<?php echo round($movie['rating'], 1) ?>">
+                            <div class="rating-label pull-left"><?php echo round($movie['rating'], 1) ?>/5</div>
                         </div>
                     </div>
             </div>
@@ -87,8 +88,8 @@ $topGenres = $db->query('SELECT topicid, description FROM topics LIMIT 10');
                         <div class="caption">
                             <h4><a class="movie-title" href="movie.php?id=<?php echo $movie['movieid'] ?>"><?php echo $movie['name'] ?></a></h4>
                             <p><?php echo $movie['datereleased'] ?></p>
-                            <input type="text" class="rating" data-size="xs" data-step="1" data-show-clear="false" data-display-only="true" value="4">
-                            <div class="user-rating"><strong>4 Stars</strong> by <a href="profile.php?id=1">John Doe</a></div>
+                            <input type="text" class="rating" data-size="xs" data-step="1" data-show-clear="false" data-display-only="true" value="<?php echo $movie['rating'] ?>">
+                            <div class="user-rating"><strong><?php echo $movie['rating'] ?> Stars</strong> by <a href="profile.php?id=1"><?php echo $movie['firstname'] . ' '. $movie['lastname'] ?></a></div>
                         </div>
                     </div>
             </div>
@@ -108,23 +109,23 @@ $topGenres = $db->query('SELECT topicid, description FROM topics LIMIT 10');
                 </ul>
             </div>
             <div class="col-sm-4">
+                <h3 class="text-center top-list-title">Popular Genres</h3>
+                <ul class="list-group top-list">
+                    <?php foreach ($topGenres as $key => $genre) { ?>
+                    <li class="list-group-item">
+                        <span class="badge"><?php echo ($key + 1) ?></span>
+                        <a href="genres.php?id=<?php echo $genre['topicid'] ?>"><?php echo $genre['description'] ?></a>
+                    </li>
+                    <?php } ?>
+                </ul>
+            </div>
+            <div class="col-sm-4">
                 <h3 class="text-center top-list-title">Top Directors</h3>
                 <ul class="list-group top-list">
                     <?php foreach ($topDirectors as $key => $director) { ?>
                     <li class="list-group-item">
                         <span class="badge"><?php echo ($key + 1) ?></span>
                         <a href="director.php?id=<?php echo $director['directorid'] ?>"><?php echo $director['name'] ?></a>
-                    </li>
-                    <?php } ?>
-                </ul>
-            </div>
-            <div class="col-sm-4">
-                <h3 class="text-center top-list-title">Top Genres</h3>
-                <ul class="list-group top-list">
-                    <?php foreach ($topGenres as $key => $genre) { ?>
-                    <li class="list-group-item">
-                        <span class="badge"><?php echo ($key + 1) ?></span>
-                        <a href="genre.php?id=<?php echo $genre['topicid'] ?>"><?php echo $genre['description'] ?></a>
                     </li>
                     <?php } ?>
                 </ul>
