@@ -63,6 +63,19 @@ a:focus, a:hover {
 	border-color: #497468;
 }
 
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+	background-color: #497468;
+	border-color: #497468;
+}
+
+.pagination>li>a, .pagination>li>span {
+	color: #8c4646;
+}
+
+.pagination>li>a:focus, .pagination>li>a:hover, .pagination>li>span:focus, .pagination>li>span:hover {
+	color: #723939;
+}
+
 .jumbotron > .container {
 	text-align: center;
 }
@@ -232,4 +245,12 @@ td .glyphicon-star {
 
 .info-margin {
     margin: 4px 0;
+}
+
+.sort-container {
+	margin-bottom: 4px;
+}
+
+.movie-row {
+	cursor: pointer;
 }

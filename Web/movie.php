@@ -9,12 +9,12 @@ require "./includes/Db.class.php";
 # create a database object
 $db = new Db();
 
-if (empty($_GET['id'])) {
+if (empty($_GET['id']) || !ctype_digit($_GET['id'])) {
     header('Location: index.php');
     die();
 }
 
-$movieid = $_GET['id'];
+$movieid = (int)$_GET['id'];
 
 $isEdit = false;
 if (!empty($_GET['action'])) {
@@ -144,7 +144,7 @@ if (!empty($directors)) {
         }
     }
     if (count($directors) > 1) {
-        $directors = "Directors";
+        $directorsTitle = "Directors";
     }
 }
 else {
@@ -172,7 +172,7 @@ if (!empty($genres)) {
         }
     }
     if (count($genres) > 1) {
-        $genres = "Genres";
+        $genresTitle = "Genres";
     }
 }
 else {
@@ -191,7 +191,7 @@ if (!empty($studios)) {
         $studiosText .= '<a href="studio.php?id=' . $studio['studioid'] . '">' . $studio['name'] . '</a>';
     }
     if (count($studios) > 1) {
-        $studios = "Studios";
+        $studiosTitle = "Studios";
     }
 }
 else {
@@ -224,11 +224,12 @@ $userWatches = $db->query('SELECT u.userid, u.firstname, u.lastname, w.rating FR
 
 // Get related movies
 $topicid = 0;
-$movieGenre = $genres[array_rand($genres)]; // get 1 genre associated to the movie
-if (!empty($movieGenre))
-    $topicid = $movieGenre['topicid'];
-
-$db->bindMore(array("topicid"=>$topicid,"movieid"=>$movieid));
+if (!empty($genres)) {
+    $movieGenre = $genres[array_rand($genres)]; // get 1 genre associated to the movie
+    if (!empty($movieGenre))
+        $topicid = $movieGenre['topicid'];
+}
+$db->bindMore(array("topicid"=>$topicid,"movieid"=>(int)$movieid));
 $relatedMovies = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posterurl, t.topicid FROM movie m JOIN movietopics t ON m.movieid = t.movieid AND m.movieid != :movieid ORDER BY t.topicid = :topicid DESC, random() LIMIT 6');
 
 ?>
