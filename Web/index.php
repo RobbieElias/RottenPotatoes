@@ -19,13 +19,10 @@ if (isset($_GET['logout'])) {
 }
 
 $topMovies = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posterurl, (SELECT coalesce(AVG(w.rating), 0) FROM watches w WHERE w.movieid = m.movieid) rating FROM movie m ORDER BY rating DESC, name LIMIT 8');
-
 $recentlyRated = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posterurl, w.rating, u.userid, u.firstname, u.lastname FROM movie m JOIN watches w ON m.movieid = w.movieid JOIN movieuser u ON w.userid = u.userid WHERE w.rating IS NOT NULL ORDER BY datewatched DESC LIMIT 4');
-
-
-$topActors = $db->query('SELECT actorid, name FROM actor LIMIT 10');
-$topDirectors = $db->query('SELECT directorid, name AS name FROM director LIMIT 10');
-$topGenres = $db->query('SELECT topicid, description FROM topics LIMIT 10');
+$topActors = $db->query('SELECT a.actorid, a.name, (SELECT coalesce(AVG(w.rating), 0) FROM watches w JOIN actorplays p ON w.movieid = p.movieid AND p.actorid = a.actorid) rating FROM actor a ORDER BY rating DESC, name LIMIT 10');
+$topDirectors = $db->query('SELECT d1.directorid, d1.name, (SELECT coalesce(AVG(w.rating), 0) FROM watches w JOIN directs d2 ON w.movieid = d2.movieid AND d2.directorid = d1.directorid) rating FROM director d1 ORDER BY rating DESC, name LIMIT 10');
+$topGenres = $db->query('SELECT t.topicid, t.description, (SELECT COUNT(*) FROM watches w JOIN movietopics m ON w.movieid = m.movieid AND m.topicid = t.topicid WHERE m.topicid = t.topicid) watchcount FROM topics t ORDER BY watchcount DESC, description LIMIT 10');
 
 ?>
 
