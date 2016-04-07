@@ -26,9 +26,16 @@ def createActorPlays(movieID):
 			name = actor.strip() # remove white space
 			name = name.replace('\'','\'\'') # escape quotes for the db
 			actorID = getActorID(name)
-			print str(actorID) + '-' + str(movieID)
-			cur.execute("INSERT INTO actorPlays (movieID,actorID) \
-         	 VALUES ('%s','%s')" % (movieID,actorID))
+			part1 = "INSERT INTO actorPlays(movieID,actorID) VALUES (\'"
+			part2 = str(movieID)
+			part3 = "\',\'"
+			part4 = str(actorID)
+			part5 = "\');"
+			if (len(part2) > 0) and (len(part4) > 0):
+				print part1+part2+part3+part4+part5
+			#print str(actorID) + '-' + str(movieID)
+			#cur.execute("INSERT INTO actorPlays (movieID,actorID) \
+         	# VALUES ('%s','%s')" % (movieID,actorID))
 
 
 # connect to the project database

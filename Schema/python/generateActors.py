@@ -3,6 +3,8 @@
 import psycopg2
 import omdb
 
+actorList = []
+
 def getMovie(name):
 	movie = omdb.title(name)
 	return movie;
@@ -17,9 +19,14 @@ def createActors(movieID):
 		for actor in actors:
 			name = actor.strip()
 			name = name.replace('\'','\'\'')
-			print name
-			cur.execute("INSERT INTO actor (name) \
-         	 VALUES ('%s')" % (name))
+			if name not in actorList:
+				actorList.append(name)
+				part1 = "INSERT INTO actor(name) VALUES (\'"
+				part2 = name
+				part3 = "\');"
+				print part1+part2+part3
+			return;
+	
 
 
 # connect to the project database

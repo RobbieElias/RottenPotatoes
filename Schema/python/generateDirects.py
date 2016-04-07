@@ -27,9 +27,16 @@ def createDirects(movieID):
 			name = name.replace('\'','\'\'')
 			directorID = getDirectorID(name)
 			if directorID > 0:
-				print str(directorID) + '-' + str(movieID)
-				cur.execute("INSERT INTO directs (movieID,directorID) \
-         	 	VALUES ('%s','%s')" % (movieID,directorID))
+				part1 = "INSERT INTO directs(movieID,directorID) VALUES (\'"
+				part2 = str(movieID)
+				part3 = "\',\'"
+				part4 = str(directorID)
+				part5 = "\');"
+				if (len(part2) > 0) and (len(part4) > 0):
+					print part1+part2+part3+part4+part5
+				#print str(directorID) + '-' + str(movieID)
+				#cur.execute("INSERT INTO directs (movieID,directorID) \
+         	 	#VALUES ('%s','%s')" % (movieID,directorID))
 
 
 # connect to the project database
