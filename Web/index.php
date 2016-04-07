@@ -18,13 +18,13 @@ if (isset($_GET['logout'])) {
 
 }
 
-$topMovies = $db->query('SELECT movieid, name, datereleased, posterurl FROM movie LIMIT 8');
+$topMovies = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posterurl, (SELECT coalesce(AVG(w.rating), 0) FROM watches w WHERE w.movieid = m.movieid) rating FROM movie m ORDER BY rating DESC, name LIMIT 8');
 
-$recentlyRated = $db->query('SELECT movieid, name, datereleased, posterurl FROM movie LIMIT 4');
+$recentlyRated = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posterurl, w.rating, u.userid, u.firstname, u.lastname FROM movie m JOIN watches w ON m.movieid = w.movieid JOIN movieuser u ON w.userid = u.userid WHERE w.rating IS NOT NULL ORDER BY datewatched DESC LIMIT 4');
 
 $topActors = $db->query('SELECT a.actorid, a.name, (SELECT coalesce(AVG(w.rating), 0) FROM watches w JOIN actorplays p ON w.movieid = p.movieid AND p.actorid = a.actorid) rating FROM actor a ORDER BY rating DESC, name LIMIT 10');
 $topDirectors = $db->query('SELECT d1.directorid, d1.lastname AS name, (SELECT coalesce(AVG(w.rating), 0) FROM watches w JOIN directs d2 ON w.movieid = d2.movieid AND d2.directorid = d1.directorid) rating FROM director d1 ORDER BY rating DESC, name LIMIT 10');
-$topGenres = $db->query('SELECT t.topicid, t.description, (SELECT COUNT(*) FROM movietopics m WHERE m.topicid = t.topicid) moviecount FROM topics t ORDER BY moviecount DESC, description LIMIT 10');
+$topGenres = $db->query('SELECT t.topicid, t.description, (SELECT COUNT(*) FROM watches w JOIN movietopics m ON w.movieid = m.movieid AND m.topicid = t.topicid WHERE m.topicid = t.topicid) watchcount FROM topics t ORDER BY watchcount DESC, description LIMIT 10');
 
 ?>
 
@@ -66,8 +66,8 @@ $topGenres = $db->query('SELECT t.topicid, t.description, (SELECT COUNT(*) FROM 
                         <div class="caption">
                             <h4><a class="movie-title" href="movie.php?id=<?php echo $movie['movieid'] ?>"><?php echo $movie['name'] ?></a></h4>
                             <p><?php echo $movie['datereleased'] ?></p>
-                            <input type="text" class="rating" data-size="xs" data-step="1" data-show-clear="false" data-display-only="true" value="4">
-                            <div class="rating-label pull-left">4.5/5</div>
+                            <input type="text" class="rating" data-size="xs" data-step="1" data-show-clear="false" data-display-only="true" value="<?php echo round($movie['rating'], 1) ?>">
+                            <div class="rating-label pull-left"><?php echo round($movie['rating'], 1) ?>/5</div>
                         </div>
                     </div>
             </div>
@@ -87,8 +87,8 @@ $topGenres = $db->query('SELECT t.topicid, t.description, (SELECT COUNT(*) FROM 
                         <div class="caption">
                             <h4><a class="movie-title" href="movie.php?id=<?php echo $movie['movieid'] ?>"><?php echo $movie['name'] ?></a></h4>
                             <p><?php echo $movie['datereleased'] ?></p>
-                            <input type="text" class="rating" data-size="xs" data-step="1" data-show-clear="false" data-display-only="true" value="4">
-                            <div class="user-rating"><strong>4 Stars</strong> by <a href="profile.php?id=1">John Doe</a></div>
+                            <input type="text" class="rating" data-size="xs" data-step="1" data-show-clear="false" data-display-only="true" value="<?php echo $movie['rating'] ?>">
+                            <div class="user-rating"><strong><?php echo $movie['rating'] ?> Stars</strong> by <a href="profile.php?id=1"><?php echo $movie['firstname'] . ' '. $movie['lastname'] ?></a></div>
                         </div>
                     </div>
             </div>
