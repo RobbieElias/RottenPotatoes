@@ -168,7 +168,7 @@ if (!empty($genres)) {
         else {
             if ($key > 0)
                 $genresText .= ', ';
-            $genresText .= '<a href="genre.php?id=' . $genre['topicid'] . '">' . $genre['description'] . '</a>';
+            $genresText .= '<a href="genres.php?id=' . $genre['topicid'] . '">' . $genre['description'] . '</a>';
         }
     }
     if (count($genres) > 1) {

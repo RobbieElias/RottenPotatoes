@@ -24,18 +24,18 @@ $numPages = (int)ceil($moviecount / 50);
 $prevPage = ($page === 1) ? $page : $page - 1;
 $nextPage = ($page === $numPages) ? $page : $page + 1;
 
-$orderBy = 'ORDER BY rating DESC';
+$orderBy = 'ORDER BY rating DESC, name';
 if ($sort === 'alpha') {
     $title = "Movies";
     $orderBy = 'ORDER BY name';
 }
 else if ($sort === 'popularity') {
     $title = "Popular Movies";
-    $orderBy = 'ORDER BY watchescount DESC';
+    $orderBy = 'ORDER BY watchescount DESC, name';
 }
 $offset = ($page - 1) * 50;
 
-$movies = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posterurl, (SELECT coalesce(AVG(w.rating), 0) FROM watches w WHERE w.movieid = m.movieid) AS rating, (SELECT COUNT(*) FROM watches w WHERE w.movieid = m.movieid) AS watchescount FROM movie m ' . $orderBy . ' LIMIT 50 OFFSET ' . $offset);
+$movies = $db->query('SELECT m.movieid, m.name, m.datereleased, (SELECT coalesce(AVG(w.rating), 0) FROM watches w WHERE w.movieid = m.movieid) AS rating, (SELECT COUNT(*) FROM watches w WHERE w.movieid = m.movieid) AS watchescount FROM movie m ' . $orderBy . ' LIMIT 50 OFFSET ' . $offset);
 
 parse_str($_SERVER['QUERY_STRING'], $queryArray);
 unset($queryArray['page']);
@@ -99,9 +99,9 @@ $queryNoPage = (empty($queryNoPage) ? '?' : '?' . $queryNoPage . '&');
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Rating<?php if ($sort === 'rating') echo '&nbsp;&#9660;'; ?></th>
                             <th>Movie<?php if ($sort === 'alpha') echo '&nbsp;&#9660;'; ?></th>
                             <th class="hidden-xs">Year</th>
-                            <th class="text-right">Rating<?php if ($sort === 'rating') echo '&nbsp;&#9660;'; ?></th>
                             <th class="text-right">Views<?php if ($sort === 'popularity') echo '&nbsp;&#9660;'; ?></th>
                         </tr>
                     </thead>
@@ -109,9 +109,9 @@ $queryNoPage = (empty($queryNoPage) ? '?' : '?' . $queryNoPage . '&');
                         <?php foreach ($movies as $key => $movie) { ?>
                         <tr class="movie-row" data-id="<?php echo $movie['movieid'] ?>">
                             <td><?php echo (($key + 1) + (($page - 1) * 50)) ?></td>
+                            <td><span class="glyphicon glyphicon-star" aria-hidden="true"></span> <?php echo round($movie['rating'], 1) ?></td>
                             <td><?php echo $movie['name'] ?></td>
                             <td class="hidden-xs"><?php echo $movie['datereleased'] ?></td>
-                            <td class="text-right"><?php echo round($movie['rating'], 1) ?> <span class="glyphicon glyphicon-star" aria-hidden="true"></span></td>
                             <td class="text-right"><?php echo $movie['watchescount'] ?></td>
                         </tr>
                         <?php } ?>

@@ -22,9 +22,9 @@ $topMovies = $db->query('SELECT movieid, name, datereleased, posterurl FROM movi
 
 $recentlyRated = $db->query('SELECT movieid, name, datereleased, posterurl FROM movie LIMIT 4');
 
-$topActors = $db->query('SELECT actorid, name FROM actor LIMIT 10');
-$topDirectors = $db->query('SELECT directorid, lastname AS name FROM director LIMIT 10');
-$topGenres = $db->query('SELECT topicid, description FROM topics LIMIT 10');
+$topActors = $db->query('SELECT a.actorid, a.name, (SELECT coalesce(AVG(w.rating), 0) FROM watches w JOIN actorplays p ON w.movieid = p.movieid AND p.actorid = a.actorid) rating FROM actor a ORDER BY rating DESC, name LIMIT 10');
+$topDirectors = $db->query('SELECT d1.directorid, d1.lastname AS name, (SELECT coalesce(AVG(w.rating), 0) FROM watches w JOIN directs d2 ON w.movieid = d2.movieid AND d2.directorid = d1.directorid) rating FROM director d1 ORDER BY rating DESC, name LIMIT 10');
+$topGenres = $db->query('SELECT t.topicid, t.description, (SELECT COUNT(*) FROM movietopics m WHERE m.topicid = t.topicid) moviecount FROM topics t ORDER BY moviecount DESC, description LIMIT 10');
 
 ?>
 
@@ -108,23 +108,23 @@ $topGenres = $db->query('SELECT topicid, description FROM topics LIMIT 10');
                 </ul>
             </div>
             <div class="col-sm-4">
+                <h3 class="text-center top-list-title">Popular Genres</h3>
+                <ul class="list-group top-list">
+                    <?php foreach ($topGenres as $key => $genre) { ?>
+                    <li class="list-group-item">
+                        <span class="badge"><?php echo ($key + 1) ?></span>
+                        <a href="genres.php?id=<?php echo $genre['topicid'] ?>"><?php echo $genre['description'] ?></a>
+                    </li>
+                    <?php } ?>
+                </ul>
+            </div>
+            <div class="col-sm-4">
                 <h3 class="text-center top-list-title">Top Directors</h3>
                 <ul class="list-group top-list">
                     <?php foreach ($topDirectors as $key => $director) { ?>
                     <li class="list-group-item">
                         <span class="badge"><?php echo ($key + 1) ?></span>
                         <a href="director.php?id=<?php echo $director['directorid'] ?>"><?php echo $director['name'] ?></a>
-                    </li>
-                    <?php } ?>
-                </ul>
-            </div>
-            <div class="col-sm-4">
-                <h3 class="text-center top-list-title">Top Genres</h3>
-                <ul class="list-group top-list">
-                    <?php foreach ($topGenres as $key => $genre) { ?>
-                    <li class="list-group-item">
-                        <span class="badge"><?php echo ($key + 1) ?></span>
-                        <a href="genre.php?id=<?php echo $genre['topicid'] ?>"><?php echo $genre['description'] ?></a>
                     </li>
                     <?php } ?>
                 </ul>

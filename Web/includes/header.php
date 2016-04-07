@@ -13,6 +13,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="index.php">Home</a></li>
                 <li><a href="movies.php">Movies</a></li>
+                <li><a href="genres.php">Genres</a></li>
                 <?php if (!$loggedIn) { ?>
                 <li><a href="login.php">Login</a></li>
                 <li><a href="register.php">Register</a></li>
