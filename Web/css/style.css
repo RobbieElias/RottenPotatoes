@@ -19,6 +19,11 @@ a:focus, a:hover {
 .navbar-brand {
 	color: #fff;
 	font-size: 1.6em;
+	padding-top: 12px;
+}
+
+.navbar-brand > img {
+	width: 220px;
 }
 
 .navbar-brand:hover, .navbar-brand:focus {
