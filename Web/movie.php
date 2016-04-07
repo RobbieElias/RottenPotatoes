@@ -34,10 +34,10 @@ if (!empty($_POST) && $loggedIn) {
         if (!empty($_POST['name'])) {
             $name = trim($_POST['name']);
             $db->bind('name', $name);
-            $directorid = $db->single('SELECT directorid FROM director WHERE lastname = :name');
+            $directorid = $db->single('SELECT directorid FROM director WHERE name = :name');
             if (empty($directorid)) {
                 $db->bind('name', $name);
-                $insert = $db->query('INSERT INTO director (lastname) VALUES (:name)');
+                $insert = $db->query('INSERT INTO director (name) VALUES (:name)');
                 if ($insert > 0) {
                     $directorid = $db->lastInsertId('director_directorid_seq');
                 }
@@ -125,7 +125,7 @@ $actors = $db->query('SELECT a.actorid, a.name, p.role FROM actor a JOIN actorpl
 
 // Get directors
 $db->bind('movieid', $movieid);
-$directors = $db->query('SELECT d1.directorid, d1.lastname AS name FROM director d1 JOIN directs d2 ON d2.directorid = d1.directorid AND d2.movieid = :movieid');
+$directors = $db->query('SELECT d1.directorid, d1.name FROM director d1 JOIN directs d2 ON d2.directorid = d1.directorid AND d2.movieid = :movieid');
 $directorsTitle = "Director";
 $directorsText = "";
 if (!empty($directors)) {
