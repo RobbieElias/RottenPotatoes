@@ -97,15 +97,10 @@ CREATE TABLE actor (
 CREATE TABLE actorPlays (
    movieID           int REFERENCES movie(movieID) ON DELETE CASCADE,
    actorID           int REFERENCES actor(actorID) ON DELETE CASCADE,
+   role              text,
    PRIMARY KEY (actorId,movieID)
 );
 
-CREATE TABLE role (
-   roleID            SERIAL,
-   actorID           int REFERENCES actor(actorID) ON DELETE CASCADE,
-   name              text,
-   PRIMARY KEY (roleID)
-);
 
 
 
