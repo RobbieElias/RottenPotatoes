@@ -141,6 +141,10 @@ footer a {
   	white-space: nowrap;
 }
 
+.rating-loading{
+	background:url(../images/loading.gif) top left no-repeat;
+}
+
 .top-list-title {
 	margin-bottom: 18px;
 }
