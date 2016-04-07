@@ -64,9 +64,9 @@ $topGenres = $db->query('SELECT topicid, description FROM topics LIMIT 10');
                     <div class="thumbnail movie-thumbnail">
                         <a class="movie-poster" href="movie.php?id=<?php echo $movie['movieid'] ?>" style="background-image: url('<?php echo $movie['posterurl'] ?>')"></a>
                         <div class="caption">
-                            <h4 class="text-overflow"><a class="movie-title" href="movie.php?id=<?php echo $movie['movieid'] ?>"><?php echo $movie['name'] ?></a></h4>
+                            <h4><a class="movie-title" href="movie.php?id=<?php echo $movie['movieid'] ?>"><?php echo $movie['name'] ?></a></h4>
                             <p><?php echo $movie['datereleased'] ?></p>
-                            <input id="input-id" type="text" class="rating" data-size="xs" data-step="1" data-show-clear="false" data-display-only="true" value="4">
+                            <input type="text" class="rating" data-size="xs" data-step="1" data-show-clear="false" data-display-only="true" value="4">
                             <div class="rating-label pull-left">4.5/5</div>
                         </div>
                     </div>
@@ -87,7 +87,7 @@ $topGenres = $db->query('SELECT topicid, description FROM topics LIMIT 10');
                         <div class="caption">
                             <h4><a class="movie-title" href="movie.php?id=<?php echo $movie['movieid'] ?>"><?php echo $movie['name'] ?></a></h4>
                             <p><?php echo $movie['datereleased'] ?></p>
-                            <input id="input-id" type="text" class="rating" data-size="xs" data-step="1" data-show-clear="false" data-display-only="true" value="4">
+                            <input type="text" class="rating" data-size="xs" data-step="1" data-show-clear="false" data-display-only="true" value="4">
                             <div class="user-rating"><strong>4 Stars</strong> by <a href="profile.php?id=1">John Doe</a></div>
                         </div>
                     </div>
