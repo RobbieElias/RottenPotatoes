@@ -1,0 +1,5 @@
+Time : 18:21:51
+SQLSTATE[42703]: Undefined column: 7 ERROR:  column "lastname" does not exist
+LINE 1: SELECT directorid, lastname AS name FROM director LIMIT 10
+                           ^
+Raw SQL : SELECT directorid, lastname AS name FROM director LIMIT 10

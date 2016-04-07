@@ -23,7 +23,7 @@ $topMovies = $db->query('SELECT movieid, name, datereleased, posterurl FROM movi
 $recentlyRated = $db->query('SELECT movieid, name, datereleased, posterurl FROM movie LIMIT 4');
 
 $topActors = $db->query('SELECT actorid, name FROM actor LIMIT 10');
-$topDirectors = $db->query('SELECT directorid, lastname AS name FROM director LIMIT 10');
+$topDirectors = $db->query('SELECT directorid, name AS name FROM director LIMIT 10');
 $topGenres = $db->query('SELECT topicid, description FROM topics LIMIT 10');
 
 ?>
