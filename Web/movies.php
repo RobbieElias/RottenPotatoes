@@ -98,9 +98,9 @@ $queryNoPage = (empty($queryNoPage) ? '?' : '?' . $queryNoPage . '&');
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th class="hidden-xs">#</th>
+                            <th>#</th>
                             <th>Movie<?php if ($sort === 'alpha') echo '&nbsp;&#9660;'; ?></th>
-                            <th>Year</th>
+                            <th class="hidden-xs">Year</th>
                             <th class="text-right">Rating<?php if ($sort === 'rating') echo '&nbsp;&#9660;'; ?></th>
                             <th class="text-right">Views<?php if ($sort === 'popularity') echo '&nbsp;&#9660;'; ?></th>
                         </tr>
@@ -108,9 +108,9 @@ $queryNoPage = (empty($queryNoPage) ? '?' : '?' . $queryNoPage . '&');
                     <tbody>
                         <?php foreach ($movies as $key => $movie) { ?>
                         <tr class="movie-row" data-id="<?php echo $movie['movieid'] ?>">
-                            <td class="hidden-xs"><?php echo (($key + 1) + (($page - 1) * 50)) ?></td>
+                            <td><?php echo (($key + 1) + (($page - 1) * 50)) ?></td>
                             <td><?php echo $movie['name'] ?></td>
-                            <td><?php echo $movie['datereleased'] ?></td>
+                            <td class="hidden-xs"><?php echo $movie['datereleased'] ?></td>
                             <td class="text-right"><?php echo round($movie['rating'], 1) ?> <span class="glyphicon glyphicon-star" aria-hidden="true"></span></td>
                             <td class="text-right"><?php echo $movie['watchescount'] ?></td>
                         </tr>
