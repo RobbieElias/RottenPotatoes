@@ -41,7 +41,7 @@ CREATE TABLE movie (
 CREATE TABLE watches (
    userID            int REFERENCES movieUser(userID) ON DELETE CASCADE,
    movieID           int REFERENCES movie(movieID) ON DELETE CASCADE,
-   dateWatched       date,   
+   dateWatched       timestamp DEFAULT CURRENT_TIMESTAMP,   
    rating            int,
    PRIMARY KEY (movieID,userID)
 );
