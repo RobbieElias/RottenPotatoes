@@ -150,7 +150,7 @@ else {
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-lg-2 col-xs-4">
-                                        <div class="info-margin"><strong><?php echo $moviesTitle ?>:</strong></div>
+                                        <div class="info-margin"><a href="movie.php?id=<?php echo $movie['movieid'] ?>"><strong><?php echo $moviesTitle ?>:</strong></div>
                                     </div>
                                     <div class="col-lg-4 col-xs-8">
 									<?php foreach ($movies as $key => $movie) {?>

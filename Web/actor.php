@@ -154,7 +154,7 @@ else {
                                     </div>
                                     <div class="col-lg-4 col-xs-8">
 									<?php foreach ($movies as $key => $movie) {?>
-                                        <div class="info-margin"><?php echo $moviesText ?></div>
+                                        <div class="info-margin"><a href="movie.php?id=<?php echo $movie['movieid'] ?>"><strong><?php echo $moviesText ?><strong></div>
                                         <?php if ($isEdit) { ?>
                                         <form class="form-movie-add info-margin" method="POST">
                                             <div class="row">
