@@ -71,9 +71,6 @@ function filterString($string, $maxLength) {
 
 ?>
 
-</body>
-</html>
-
 <!DOCTYPE html>
 <html lang="en">
   <head>

@@ -11,6 +11,10 @@ a:focus, a:hover {
 	color: #723939;
 }
 
+.table {
+	margin-bottom: 0;
+}
+
 .navbar {
     background: #8C4646;
     border-color: #3e1f1f;
@@ -39,7 +43,7 @@ a:focus, a:hover {
 	background-color: #fff;
 }
 
-.nav > li > a {
+#navbar > .nav > li > a {
 	color: #fff;
 }
 
@@ -49,11 +53,11 @@ a:focus, a:hover {
 	}
 }
 
-.nav > li > a:hover, .nav > li > a:focus, .nav > li > a.active {
+#navbar > .nav > li > a:hover, #navbar > .nav > li > a:focus, #navbar > .nav > li > a.active {
 	background: #723939;
 }
 
-.nav .open>a, .nav .open>a:focus, .nav .open>a:hover {
+#navbar > .nav .open>a, #navbar > .nav .open>a:focus, #navbar > .nav .open>a:hover {
 	background: #723939;	
 }
 
@@ -97,7 +101,7 @@ a:focus, a:hover {
 	max-width: 600px;
 }
 
-#loginForm, #registerForm {
+#loginForm, #registerForm, #accountForm, #profileForm, #passwordForm {
 	margin-top: 20px;
 }
 
@@ -281,4 +285,36 @@ td .glyphicon-star {
 
 .title-view-all {
 	font-size: 0.4em;
+}
+
+.profile-img-container {
+	text-align: center;
+	background-color: #c18b5b;
+	padding: 20px 0 0 0;
+	border-bottom: solid 2px #c18b5b;
+	color: white;
+	font-size: 10em;
+}
+
+.borderless td, .borderless th {
+    border: none;
+    border-top: none!important;
+}
+
+.table-profile tr > td:first-child {
+	width: 35%;
+	padding-left: 0;
+}
+
+.table-profile tr > td:last-child {
+	width: 65%;
+	text-transform: capitalize;
+}
+
+.favorites-container .rating-sm {
+	font-size: 1.6em;
+}
+
+.container-account {
+	padding: 0;
 }

@@ -24,6 +24,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="profile.php">View Profile</a></li>
+                        <li><a href="account.php">Account Settings</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="index.php?logout=true">Logout</a></li> 
                     </ul>

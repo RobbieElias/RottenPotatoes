@@ -86,7 +86,7 @@ $topGenres = $db->query('SELECT t.topicid, t.description, (SELECT COUNT(*) FROM 
                             <h4><a class="movie-title" href="movie.php?id=<?php echo $movie['movieid'] ?>"><?php echo $movie['name'] ?></a></h4>
                             <p><?php echo $movie['datereleased'] ?></p>
                             <input type="text" class="rating" data-size="xs" data-step="1" data-show-clear="false" data-display-only="true" value="<?php echo $movie['rating'] ?>">
-                            <div class="user-rating"><strong><?php echo $movie['rating'] ?> Stars</strong> by <a href="profile.php?id=1"><?php echo $movie['firstname'] . ' '. $movie['lastname'] ?></a></div>
+                            <div class="user-rating"><strong><?php echo $movie['rating'] ?> Stars</strong> by <a href="profile.php?id=<?php echo $movie['userid'] ?>"><?php echo $movie['firstname'] . ' '. $movie['lastname'] ?></a></div>
                         </div>
                     </div>
             </div>

@@ -217,10 +217,10 @@ if ($loggedIn) {
     }
 }
 
-// Get all watches/ratings
+// Get all users watches/ratings
 $tempid = ($loggedIn) ? $userid : -1;
 $db->bindMore(array("userid"=>$tempid,"movieid"=>$movieid));
-$userWatches = $db->query('SELECT u.userid, u.firstname, u.lastname, w.rating FROM movieuser u JOIN watches w ON u.userid = w.userid WHERE u.userid != :userid AND w.movieid = :movieid ORDER BY w.datewatched DESC');
+$userWatches = $db->query('SELECT u.userid, u.firstname, u.lastname, w.rating FROM movieuser u JOIN watches w ON u.userid = w.userid WHERE u.userid != :userid AND w.movieid = :movieid ORDER BY w.datewatched DESC LIMIT 15');
 
 // Get related movies
 $topicid = 0;
@@ -308,7 +308,10 @@ $relatedMovies = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posteru
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($userWatches as $val) { ?>
+                                    <?php 
+                                    if (!empty($userWatches)) {
+                                        foreach ($userWatches as $val) { 
+                                    ?>
                                         <tr>
                                             <td><a href="profile.php?id=<?php echo $val['userid'] ?>"><?php echo $val['firstname'] . ' ' . $val['lastname'] ?></a></td>
                                             <td>
@@ -319,6 +322,13 @@ $relatedMovies = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posteru
                                             <?php } ?>                                                
                                             </td>
                                         </tr>
+                                    <?php 
+                                        }
+                                    } else {
+                                    ?>
+                                    <tr>
+                                        <td colspan="2"><em>None</em></td>
+                                    </tr>
                                     <?php } ?>
                                 </tbody>
                             </table>
