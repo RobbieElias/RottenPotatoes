@@ -16,7 +16,7 @@ if (isset($_POST['register'])) {
 
     $email = isset($_POST['email']) ? trim($_POST['email']) : null;
     $name = isset($_POST['name']) ? trim($_POST['name']) : null;
-    $password = isset($_POST['password']) ? trim($_POST['password']) : null;
+    $password = isset($_POST['password']) ? $_POST['password'] : null;
     $country = filterString(trim($_POST['country']), 100);
     $province = filterString(trim($_POST['province']), 100);
     $city = filterString(trim($_POST['city']), 100);

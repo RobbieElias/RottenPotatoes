@@ -136,7 +136,7 @@ function getLocation($user) {
                                 <?php 
                                 }
                                 if ($myProfile) { ?>
-                                <a href="editProfile.php" type="button" class="btn btn-default" aria-label="Edit">
+                                <a href="account.php?tab=profile" type="button" class="btn btn-default" aria-label="Edit">
                                   <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                                 </a>
                                 <?php } ?>

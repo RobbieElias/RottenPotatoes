@@ -199,7 +199,7 @@ else {
 }
 
 $db->bind('movieid', $movieid);
-$availableGenres = $db->query('SELECT t.topicid, t.description FROM topics t WHERE NOT EXISTS (SELECT 1 FROM movietopics m WHERE m.topicid = t.topicid AND m.movieid = :movieid)');
+$availableGenres = $db->query('SELECT t.topicid, t.description FROM topics t WHERE NOT EXISTS (SELECT 1 FROM movietopics m WHERE m.topicid = t.topicid AND m.movieid = :movieid) ORDER BY description');
 
 
 // Get user rating (watches table)

@@ -9,36 +9,174 @@ require "./includes/Db.class.php";
 # create a database object
 $db = new Db();
 
-$message = null;
+if (!$loggedIn) {
+    header('Location: index.php');
+    die();
+}
 
-// if (isset($_POST['register'])) {
+$tab = "account";
+if (!empty($_GET['tab'])) {
+    if ($_GET['tab'] === 'profile')
+        $tab = 'profile';
+} 
 
-//     $email = isset($_POST['email']) ? trim($_POST['email']) : null;
-//     $name = isset($_POST['name']) ? trim($_POST['name']) : null;
-//     $password = isset($_POST['password']) ? trim($_POST['password']) : null;
-//     $country = filterString(trim($_POST['country']), 100);
-//     $province = filterString(trim($_POST['province']), 100);
-//     $city = filterString(trim($_POST['city']), 100);
+$userid = $_SESSION['userid'];
+$messageAccount = null;
+$messageProfile = null;
+$messagePassword = null;
+$accountUpdated = false;
+$profileUpdated = false;
+$passwordUpdated = false;
+$ageranges = [
+    ['text' => '0-17', 'value' => '[0,17]'],
+    ['text' => '18-25', 'value' => '[18,25]'],
+    ['text' => '26-39', 'value' => '[26,39]'],
+    ['text' => '40+', 'value' => '[40,]']
+];
 
-//     if (validateEmail($email) && validateName($name) && validatePassword($password)) {
+if (isset($_POST['account'])) {
 
-//         try {
-//             list($firstname, $lastname) = explode(' ', $name);
-//             $insert = $db->query("INSERT INTO movieuser(password,lastname,firstname,email,city,province,country) VALUES(:password,:lastname,:firstname,:email,:city,:province,:country)", array('password'=>$password,'lastname'=>$lastname,'firstname'=>$firstname,'email'=>$email,'city'=>$city,'province'=>$province,'country'=>$country));
+    $email = isset($_POST['email']) ? trim($_POST['email']) : null;
+    $name = isset($_POST['name']) ? trim($_POST['name']) : null;
+    $country = filterString(trim($_POST['country']), 100);
+    $province = filterString(trim($_POST['province']), 100);
+    $city = filterString(trim($_POST['city']), 100);
 
-//             if ($insert > 0) {
-//                 $_SESSION['userid'] = $db->lastInsertId('movieuser_userid_seq');
-//                 $_SESSION['firstname'] = $firstname;
-//                 $registered = $loggedIn = true;
-//             }
-//         }
-//         catch (PDOException $e) {
-//             $message = 'Sorry, this email is already in use.';
-//         }
+    if (validateEmail($email) && validateName($name)) {
 
-//     }
+        try {
 
-// }
+            $uniqueEmail = true;
+            $db->bindMore(array('email'=>$email,'userid'=>$userid));
+            $exists = $db->single('SELECT 1 FROM movieuser WHERE email = :email AND userid != :userid');
+            if (!empty($exists)) 
+                $uniqueEmail = false;
+
+            if ($uniqueEmail) {
+                list($firstname, $lastname) = explode(' ', $name);
+                $update = $db->query('UPDATE movieuser SET lastname = :lastname, firstname = :firstname, email = :email, city = :city, province = :province, country = :country WHERE userid = :userid', array('lastname'=>$lastname,'firstname'=>$firstname,'email'=>$email,'city'=>$city,'province'=>$province,'country'=>$country,'userid'=>$userid));
+
+                if ($update > 0) {
+                    $_SESSION['firstname'] = $firstname;
+                    $accountUpdated = true;
+                    $messageAccount = "Your account has been successfully updated.";
+                }
+                else {
+                    $messageAccount = "Your account could not be updated.";   
+                }
+            }
+            else {
+                $messageAccount = 'Sorry, this email is already in use.';
+            }
+        }
+        catch (PDOException $e) {
+            $messageAccount = 'Your account could not be updated.';
+        }
+
+    }
+
+}
+else if (isset($_POST['profile'])) {
+
+    $tab = 'profile';
+
+    $gender = !empty($_POST['gender']) ? $_POST['gender'] : 'male';
+    $agerangeIndex = !empty($_POST['age']) ? $_POST['age'] : 0;
+    $occupation = filterString(trim($_POST['occupation']), 50);
+    $device = filterString(trim($_POST['device']), 20);
+
+    if (validateGender($gender) && !empty($ageranges[$agerangeIndex])) {
+
+        try {
+            $hasProfile = false;
+            $db->bind('userid',$userid);
+            $exists = $db->single('SELECT 1 FROM profile WHERE userid = :userid');
+            if (!empty($exists)) 
+                $hasProfile = true;
+
+            if ($hasProfile) {
+                $update = $db->query('UPDATE profile SET agerange = :agerange, gender = :gender, occupation = :occupation, deviceused = :device WHERE userid = :userid', array('agerange'=>$ageranges[$agerangeIndex]['value'],'gender'=>$gender,'occupation'=>$occupation,'device'=>$device,'userid'=>$userid));
+
+                if ($update > 0) {
+                    $profileUpdated = true;
+                    $messageProfile = "Your profile has been successfully updated.";
+                }
+            }
+            else {
+                $insert = $db->query('INSERT INTO profile(userid, agerange, gender, occupation, deviceused) VALUES (:agerange, :gender, :occupation, :device)', array('agerange'=>$ageranges[$agerangeIndex]['value'],'gender'=>$gender,'occupation'=>$occupation,'device'=>$device));
+
+                if ($insert > 0) {
+                    $profileUpdated = true;
+                    $messageProfile = "Your profile has been successfully updated.";
+                }
+            }
+
+            if (!$profileUpdated)
+                $messageProfile = 'Your profile could not be updated.';
+        }
+        catch (PDOException $e) {
+            $messageProfile = 'Your profile could not be updated.';
+        }
+
+    }
+
+} else if (isset($_POST['password'])) {
+
+    $tab = 'password';
+
+    $oldPassword = !empty($_POST['old-password']) ? $_POST['old-password'] : null;
+    $newPassword = !empty($_POST['new-password']) ? $_POST['new-password'] : null;
+
+    if (validatePassword($oldPassword) && validatePassword($newPassword)) {
+
+        try {
+            $db->bindMore(array('newpassword'=>$newPassword,'userid'=>$userid,'oldpassword'=>$oldPassword));
+            $update = $db->query('UPDATE movieuser SET password = :newpassword WHERE userid = :userid AND password = :oldpassword');
+
+            if ($update > 0) {
+                $passwordUpdated = true;
+                $messagePassword = "Your password has been successfully updated.";
+            }
+            else {
+                $messagePassword = 'The old password you specified is incorrect.';    
+            }
+        }
+        catch (PDOException $e) {
+            $messagePassword = 'Your password could not be updated.';
+        }
+
+    }
+
+}
+
+$db->bind('userid',$userid);
+$user = $db->row('SELECT lastname, firstname, password, email, city, province, country FROM movieuser WHERE userid = :userid');
+
+$db->bind('userid',$userid);
+$profile = $db->row('SELECT lower(agerange) AS lowerrange, upper(agerange) AS upperrange, gender, occupation, deviceused FROM profile WHERE userid = :userid');
+
+$agerange = 0;
+if (!empty($profile)) {
+    switch ($profile['lowerrange']) {
+        default:
+        case '0':
+            $agerange = 0;
+            break;
+        case '18':
+            $agerange = 1;
+            break;
+        case '26':
+            $agerange = 2;
+            break;
+        case '40':
+            $agerange = 3;
+            break;
+    }
+
+    $gender = strtolower($profile['gender']);
+    $occupation = $profile['occupation'];
+    $device = $profile['deviceused'];
+}
 
 function validateEmail($email) {
     if (empty($email) || strlen($email) > 150 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -59,6 +197,13 @@ function validatePassword($password) {
         return false;
     }
     return true;
+}
+
+function validateGender($gender) {
+    if ($gender === 'male' || $gender === 'female' || $gender === 'other') {
+        return true;
+    }
+    return false;
 }
 
 function filterString($string, $maxLength) {
@@ -84,23 +229,28 @@ function filterString($string, $maxLength) {
     <div class="container container-account">
         <h1>Account Settings</h1>
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#account" aria-controls="account" role="tab" data-toggle="tab">Account</a></li>
-            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
-            <li role="presentation"><a href="#change-password" aria-controls="change-password" role="tab" data-toggle="tab">Change Password</a></li>
+            <li role="presentation" <?php if ($tab === 'account') echo 'class="active"' ?>><a id="#tab-link-account" href="#account" aria-controls="account" role="tab" data-toggle="tab">Account</a></li>
+            <li role="presentation" <?php if ($tab === 'profile') echo 'class="active"' ?>><a id="#tab-link-profile" href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
+            <li role="presentation" <?php if ($tab === 'password') echo 'class="active"' ?>><a id="#tab-link-password" href="#change-password" aria-controls="change-password" role="tab" data-toggle="tab">Change Password</a></li>
         </ul>
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="account">
+            <div role="tabpanel" class="tab-pane <?php if ($tab === 'account') echo 'active' ?>" id="account">
                 <div class="row">
                     <div class="col-md-6 col-md-offset-3">
-                        <form id="registerForm" method="post" data-toggle="validator" role="form">
+                        <form id="registerForm" method="post" action="account.php" data-toggle="validator" role="form">
+                            <?php if ($accountUpdated) { ?>
+                            <h4 class="text-success"><?php echo $messageAccount ?></h4>
+                            <?php } else if (!empty($messageAccount)) { ?>
+                            <h4 class="text-danger"><?php echo $messageAccount ?></h4>
+                            <?php } ?>
                             <div class="form-group">
                                 <label class="control-label">Email Address*</label>
-                                <input id="email" type="email" class="form-control" name="email" maxlength="150" required />
+                                <input id="email" type="email" class="form-control" name="email" maxlength="150" value="<?php echo $user['email'] ?>" required />
                                 <div class="help-block with-errors"></div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Name*</label>
-                                <input id="name" type="text" class="form-control" name="name" maxlength="200" pattern="(\w+)( )(\w+)" required />
+                                <input id="name" type="text" class="form-control" name="name" maxlength="200" pattern="(\w+)( )(\w+)" value="<?php echo $user['firstname'] . ' ' . $user['lastname'] ?>" required />
                                 <div class="help-block with-errors"></div>
                             </div>
                             <div class="form-group">
@@ -357,12 +507,12 @@ function filterString($string, $maxLength) {
                             </div>
                             <div class="form-group">
                                 <label class="control-label">State/Province</label>
-                                <input id="province" type="text" class="form-control" name="province" maxlength="100" />
+                                <input id="province" type="text" class="form-control" name="province" maxlength="100" value="<?php echo $user['province'] ?>" />
                                 <div class="help-block with-errors"></div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">City</label>
-                                <input id="city" type="text" class="form-control" name="city" maxlength="100" />
+                                <input id="city" type="text" class="form-control" name="city" maxlength="100" value="<?php echo $user['city'] ?>" />
                                 <div class="help-block with-errors"></div>
                             </div>
                             <div class="form-group">
@@ -372,19 +522,63 @@ function filterString($string, $maxLength) {
                     </div>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="profile">
+            <div role="tabpanel" class="tab-pane <?php if ($tab === 'profile') echo 'active' ?>" id="profile">
                 <div class="row">
                     <div class="col-md-6 col-md-offset-3">
                         <form id="profileForm" method="post" data-toggle="validator" role="form">
-
+                            <?php if ($profileUpdated) { ?>
+                            <h4 class="text-success"><?php echo $messageProfile ?></h4>
+                            <?php } else if (!empty($messageProfile)) { ?>
+                            <h4 class="text-danger"><?php echo $messageProfile ?></h4>
+                            <?php } ?>
+                            <div class="form-group">
+                                <label class="control-label">Gender</label><br />
+                                <label class="radio-inline">
+                                  <input type="radio" name="gender" value="male" <?php if ($gender === 'male') echo 'checked' ?>> Male
+                                </label>
+                                <label class="radio-inline">
+                                  <input type="radio" name="gender" value="female" <?php if ($gender === 'female') echo 'checked' ?>> Female
+                                </label>
+                                <label class="radio-inline">
+                                  <input type="radio" name="gender" value="other" <?php if ($gender === 'other') echo 'checked' ?>> Other
+                                </label>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Age Group</label><br />
+                                <?php foreach ($ageranges as $key => $range) { ?>
+                                <label class="radio-inline">
+                                  <input type="radio" name="age" value="<?php echo $key ?>" <?php if ($key === $agerange) echo 'checked' ?>> <?php echo $range['text'] ?>
+                                </label>
+                                <?php } ?>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Occupation</label>
+                                <input type="text" class="form-control" name="occupation" maxlength="50" value="<?php echo $occupation ?>" />
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Preferred Device</label>
+                                <input type="text" class="form-control" placeholder="PC, Mac, Mobile, etc..." name="device" maxlength="20" value="<?php echo $device ?>" />
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div class="form-group">
+                                <input id="btn-save-profile" type="submit" class="btn btn-success" name="profile" value="Save" />
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="change-password">
+            <div role="tabpanel" class="tab-pane <?php if ($tab === 'password') echo 'active' ?>" id="change-password">
                 <div class="row">
                     <div class="col-md-6 col-md-offset-3">
-                        <form id="passwordForm" method="post" data-toggle="validator" role="form">
+                        <form id="passwordForm" method="post" action="account.php" data-toggle="validator" role="form" novalidate="false">
+                            <?php if ($passwordUpdated) { ?>
+                            <h4 class="text-success"><?php echo $messagePassword ?></h4>
+                            <?php } else if (!empty($messagePassword)) { ?>
+                            <h4 class="text-danger"><?php echo $messagePassword ?></h4>
+                            <?php } ?>
                             <div class="form-group">
                                 <label class="control-label">Old Password</label>
                                 <input id="old-password" type="password" class="form-control" name="old-password" data-minlength="5" maxlength="20" required />
@@ -408,10 +602,15 @@ function filterString($string, $maxLength) {
                 </div>
             </div>
         </div>
-        <?php if (!empty($message)) echo '<p id="error-message" class="text-danger">' . $message . '</p>'; ?>
     </div>
     <?php include 'includes/footer.php';?>
     <?php include 'includes/scripts.php';?>
     <script src="js/validator.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $.fn.validator.Constructor.INPUT_SELECTOR = ':input:not([type="submit"], button):enabled';
+            $('#country').val('<?php echo $user['country'] ?>');
+        });
+    </script>
   </body>
 </html>

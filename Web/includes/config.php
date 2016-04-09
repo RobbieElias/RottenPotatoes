@@ -4,7 +4,7 @@
 error_reporting(E_ALL);
 
 # set the php.ini file to display errors
-ini_set('display_errors','On');
+ini_set('display_errors', true);
 
 session_start();
 
