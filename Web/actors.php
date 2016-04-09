@@ -35,7 +35,7 @@ else if ($sort === 'popularity') {
 }
 $offset = ($page - 1) * 50;
 
-$actors = $db->query('SELECT a.actorID, a.name, a.dateOfBirth, (SELECT coalesce(AVG(w.rating), 0) 	FROM watches w, movie m, actorPlays p WHERE a.actorID = p.actorID AND p.movieID = w.movieid and w.movieid = m.movieid) AS rating, (SELECT COUNT(*) FROM watches w, movie m, actorPlays p WHERE a.actorID = p.actorPlays AND p.movieID = w.movieid and w.movieid = m.movieid) AS watchcount FROM actor a ' . $orderBy . ' LIMIT 50 OFFSET ' . $offset);
+$actors = $db->query('SELECT a.actorID, a.name, a.dateOfBirth, (SELECT coalesce(AVG(w.rating), 0) 	FROM watches w, movie m, actorPlays p WHERE a.actorID = p.actorID AND p.movieID = w.movieid and w.movieid = m.movieid) AS rating, (SELECT COUNT(*) FROM watches w, movie m, actorPlays p WHERE a.actorID = p.actorID AND p.movieID = w.movieid and w.movieid = m.movieid) AS watchcount FROM actor a ' . $orderBy . ' LIMIT 50 OFFSET ' . $offset);
 
 parse_str($_SERVER['QUERY_STRING'], $queryArray);
 unset($queryArray['page']);
