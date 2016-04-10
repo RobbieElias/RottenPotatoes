@@ -230,11 +230,26 @@ SELECT U.firstName, U.lastName, U.email
 -- genre. Display this information together with the movie names and the ratings. For example,
 -- Jane Doe may have rated terminator 1 as a 1, Terminator 2 as a 10 and Terminator 3 as a 3.  
 -- Clearly, she changes her mind quite often!
-
-SELECT 
-	SELECT W.userID AS UID, W.movieID AS MID, W.rating AS R
-		FROM watches W
-		WHERE W.rating NOTNULL;
+SELECT DISTINCT U.firstName, TC.description, M.name, W.rating
+	FROM(SELECT  U.userID AS UID, T.topicID AS TID, count(DISTINCT W.rating) AS C
+		FROM movieUser U, watches W, movieTopics MT, topics T, movie M
+		WHERE U.userID = W.userID
+		AND M.movieID = W.movieID
+		AND M.movieID = MT.movieID 
+		AND MT.topicID = T.topicID
+		AND W.rating NOTNULL
+		AND T.description != 'None'
+		GROUP BY U.userID, T.topicID
+		ORDER BY count(DISTINCT W.rating) DESC
+		limit 5) T,
+		movieUser U, topics TC, movieTopics MT, movie M, watches W
+	WHERE U.userID = T.UID
+	AND TC.topicID = T.TID
+	AND MT.topicID = T.TID
+	AND M.movieID = MT.movieID
+	AND W.movieID = M.movieID
+	AND W.rating NOTNULL
+	ORDER BY U.firstName
 
 
 	
