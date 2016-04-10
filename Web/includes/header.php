@@ -41,9 +41,9 @@
                 </li>
                 <?php } ?>
             </ul>
-            <form class="navbar-form navbar-right navbar-input-group" role="search" method="GET" action="search.php">
+            <form id="searchForm" class="navbar-form navbar-right navbar-input-group" role="search" method="GET" action="search.php">
                 <div class="input-group">
-                    <input type="text" class="form-control" name="term" placeholder="Search Movies, Actors, ..." value="<?php if (!empty($_GET['term'])) echo $_GET['term']; ?>">
+                    <input id="search-term" type="text" class="form-control" name="term" placeholder="Search Movies, Actors, ..." value="<?php if (!empty($_GET['term'])) echo $_GET['term']; ?>">
                     <div class="input-group-btn">
                         <button id="nav-search" type="submit" class="btn btn-md btn-default" aria-label="Search">
                             <span class="glyphicon glyphicon-search"></span>

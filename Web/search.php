@@ -27,6 +27,21 @@ $results = $db->query("SELECT * FROM ((SELECT m.movieid AS id, m.name, 'Movie' A
                       "(SELECT s.studioid AS id, s.name, 'Studio' AS type FROM studio s WHERE lower(s.name) LIKE :t5)) " .
                       "results ORDER BY name LIMIT 50");
 
+function getIcon($type) {
+    switch ($type) {
+        default:
+        case 'Actor':
+        case 'Director':
+            return 'user';
+        case 'Movie':
+            return 'film';
+        case 'Genre':
+            return 'tags';
+        case 'Studio':
+            return 'cd';
+    }
+}
+
 ?>
 
 </body>
@@ -52,7 +67,7 @@ $results = $db->query("SELECT * FROM ((SELECT m.movieid AS id, m.name, 'Movie' A
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th></th>
                             <th>Type</th>
                             <th>Name</th>
                         </tr>
@@ -60,7 +75,7 @@ $results = $db->query("SELECT * FROM ((SELECT m.movieid AS id, m.name, 'Movie' A
                     <tbody>
                         <?php foreach ($results as $key => $result) { ?>
                         <tr class="table-row" data-id="<?php echo $result['id'] ?>" data-type="<?php echo $result['type'] ?>">
-                            <td><?php echo ($key + 1) ?></td>
+                            <td><span class="glyphicon glyphicon-<?php echo getIcon($result['type']) ?>" aria-hidden="true"></span></td>
                             <td><?php echo $result['type'] ?></td>
                             <td><?php echo $result['name'] ?></td>
                         </tr>
