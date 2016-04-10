@@ -14,7 +14,7 @@ $myProfile = false;
 
 if (!empty($_GET['id']) && ctype_digit($_GET['id'])) {
     $userid = (int)$_GET['id'];
-    if ($userid == $_SESSION['userid'])
+    if ($loggedIn && $userid == $_SESSION['userid'])
         $myProfile = true;
 } 
 else if (!empty($_SESSION['userid'])) {
@@ -66,6 +66,13 @@ function getLocation($user) {
     return $text;
 }
 
+function getAgeRange($user) {
+    if (!empty($user['lowerrange']) && !empty($user['upperrange']))
+        return $user['lowerrange'] . '-' . $user['upperrange'];
+    else if (!empty($user['lowerrange']))
+        return $user['lowerrange'] . '+';
+}
+
 ?>
 
 </body>
@@ -75,7 +82,7 @@ function getLocation($user) {
 <html lang="en">
   <head>
     <?php include 'includes/meta.php';?>
-    <title><?php echo $user['firstname'] ?> - Rotten Potatoes</title>
+    <title><?php echo (!empty($user)) ? $user['firstname'] : 'Profile' ?> - Rotten Potatoes</title>
   </head>
   <body>
     <?php include 'includes/header.php';?>
@@ -111,7 +118,7 @@ function getLocation($user) {
                                         if (!empty($user['lowerrange'])) { ?>
                                         <tr>
                                             <td><strong>Age Group:</strong></td>
-                                            <td><?php echo $user['lowerrange'] . '-' . $user['upperrange'] ?></td>
+                                            <td><?php echo getAgeRange($user) ?></td>
                                         </tr>
                                         <?php 
                                         }
@@ -136,7 +143,7 @@ function getLocation($user) {
                                 <?php 
                                 }
                                 if ($myProfile) { ?>
-                                <a href="editProfile.php" type="button" class="btn btn-default" aria-label="Edit">
+                                <a href="account.php?tab=profile" type="button" class="btn btn-default" aria-label="Edit">
                                   <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                                 </a>
                                 <?php } ?>
@@ -191,7 +198,10 @@ function getLocation($user) {
                             <div class="panel-heading">Favorites</div>
                             <div class="panel-body">
                                 <div class="row">
-                                    <?php foreach ($favoriteMovies as $val) { ?>
+                                    <?php 
+                                    if (!empty($favoriteMovies)) {
+                                        foreach ($favoriteMovies as $val) { 
+                                    ?>
                                     <div class="col-xs-12 col-sm-6 col-md-4">
                                             <div class="thumbnail movie-thumbnail">
                                                 <a class="movie-poster" href="movie.php?id=<?php echo $val['movieid'] ?>" style="background-image: url('<?php echo $val['posterurl'] ?>')"></a>
@@ -203,6 +213,13 @@ function getLocation($user) {
                                                     <div class="rating-label pull-left"><?php echo $val['rating'] ?>/5</div>
                                                 </div>
                                             </div>
+                                    </div>
+                                    <?php 
+                                        } 
+                                    } else {
+                                    ?>
+                                    <div class="col-xs-12">
+                                        <p><em>None yet.</em></p>
                                     </div>
                                     <?php } ?>
                                 </div>
@@ -228,6 +245,37 @@ function getLocation($user) {
         $('#user-rating').on('rating.change', function() {
             $('#user-rating-container').submit();
         });
+
+        $('.profile-img-container').css('background-color', stringToColour("<?php echo (!empty($user)) ? $user['firstname'] : ''; ?>"));
+
+
+        // Most of function used from http://stackoverflow.com/a/16348977
+        function stringToColour(str) {
+
+            // str to hash
+            for (var i = 0, hash = 0; i < str.length; hash = str.charCodeAt(i++) + ((hash << 5) - hash));
+
+            // int/hash to hex
+            for (var i = 0, colour = ""; i < 3; colour += ("00" + ((hash >> i++ * 8) & 0xFF).toString(16)).slice(-2));
+
+            return getTintedColor(colour, 20);
+        }
+
+        // credits: richard maloney 2006
+        function getTintedColor(color, v) {
+            if (color.length >6) { color= color.substring(1,color.length)}
+            var rgb = parseInt(color, 16); 
+            var r = Math.abs(((rgb >> 16) & 0xFF)+v); if (r>255) r=r-(r-255);
+            var g = Math.abs(((rgb >> 8) & 0xFF)+v); if (g>255) g=g-(g-255);
+            var b = Math.abs((rgb & 0xFF)+v); if (b>255) b=b-(b-255);
+            r = Number(r < 0 || isNaN(r)) ? 0 : ((r > 255) ? 255 : r).toString(16); 
+            if (r.length == 1) r = '0' + r;
+            g = Number(g < 0 || isNaN(g)) ? 0 : ((g > 255) ? 255 : g).toString(16); 
+            if (g.length == 1) g = '0' + g;
+            b = Number(b < 0 || isNaN(b)) ? 0 : ((b > 255) ? 255 : b).toString(16); 
+            if (b.length == 1) b = '0' + b;
+            return "#" + r + g + b;
+        }
     </script>
   </body>
 </html>

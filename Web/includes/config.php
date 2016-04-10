@@ -4,7 +4,7 @@
 error_reporting(E_ALL);
 
 # set the php.ini file to display errors
-ini_set('display_errors','On');
+ini_set('display_errors', true);
 
 session_start();
 
@@ -15,6 +15,21 @@ $loggedIn = false;
 
 if (!empty($_SESSION['userid']) && !empty($_SESSION['firstname'])) {
 	$loggedIn = true;
+}
+
+$pageName = basename($_SERVER['PHP_SELF']);
+
+if ($loggedIn) { // disallowed pages when logged in
+	if ($pageName === 'register.php' || $pageName === 'login.php') {
+		header('Location: index.php');
+		die();
+	}
+}
+else { // disallowed pages when logged out
+	if ($pageName === 'account.php') {
+		header('Location: login.php');
+		die();
+	}
 }
 
 ?>

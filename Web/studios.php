@@ -9,29 +9,29 @@ require "./includes/Db.class.php";
 # create a database object
 $db = new Db();
 
-$topicid;
+$studioid;
 if (!empty($_GET['id']) && ctype_digit($_GET['id'])) {
-    $topicid = (int)$_GET['id'];
+    $studioid = (int)$_GET['id'];
 }
 
-$topics = $db->query('SELECT t.topicid, t.description, (SELECT COUNT(*) FROM movietopics m WHERE m.topicid = t.topicid) AS moviecount FROM topics t ORDER BY t.description');
+$studios = $db->query('SELECT s1.studioid, s1.name, s1.country, (SELECT COUNT(*) FROM sponsors s2 WHERE s2.studioid = s1.studioid) AS moviecount FROM studio s1 ORDER BY s1.name');
 
-$title = 'Genres';
+$title = 'Studios';
 $page = 1;
 $moviecount = 0;
 $numPages = 1;
 $prevPage = 1;
 $nextPage = 1;
-$topic;
+$studio;
 $movies;
 $sort = "rating";
 
-if (!empty($topicid)) {
+if (!empty($studioid)) {
 
-    $topic = findTopicid($topicid, $topics);
+    $studio = findStudioid($studioid, $studios);
 
-    if (!empty($topic)) {
-        $title = $topic['description'] . ' Movies';
+    if (!empty($studio)) {
+        $title = $studio['name'];
 
         if (!empty($_GET['page']) && ctype_digit($_GET['page'])) {
             $page = (int)$_GET['page'];
@@ -50,10 +50,10 @@ if (!empty($topicid)) {
             $orderBy = 'ORDER BY watchescount DESC, name';
         }
 
-        $db->bind('topicid', $topicid);
-        $movies = $db->query('SELECT m.movieid, m.name, m.datereleased, (SELECT coalesce(AVG(w.rating), 0) FROM watches w WHERE w.movieid = m.movieid) AS rating, (SELECT COUNT(*) FROM watches w WHERE w.movieid = m.movieid) AS watchescount FROM movie m JOIN movietopics t ON m.movieid = t.movieid AND t.topicid = :topicid ' . $orderBy . ' LIMIT 50 OFFSET ' . $offset);
+        $db->bind('studioid', $studioid);
+        $movies = $db->query('SELECT m.movieid, m.name, m.datereleased, (SELECT coalesce(AVG(w.rating), 0) FROM watches w WHERE w.movieid = m.movieid) AS rating, (SELECT COUNT(*) FROM watches w WHERE w.movieid = m.movieid) AS watchescount FROM movie m JOIN sponsors s ON m.movieid = s.movieid AND s.studioid = :studioid ' . $orderBy . ' LIMIT 50 OFFSET ' . $offset);
 
-        $moviecount = $topic['moviecount'];
+        $moviecount = $studio['moviecount'];
         $numPages = (int)ceil($moviecount / 50);
         $prevPage = ($page === 1) ? $page : $page - 1;
         $nextPage = ($page === $numPages) ? $page : $page + 1;
@@ -66,9 +66,9 @@ unset($queryArray['page']);
 $queryNoPage = http_build_query($queryArray);
 $queryNoPage = (empty($queryNoPage) ? '?' : '?' . $queryNoPage . '&');
 
-function findTopicid($id, $array) {
+function findStudioid($id, $array) {
    foreach ($array as $key => $val) {
-       if ($val['topicid'] === $id) {
+       if ($val['studioid'] === $id) {
            return $val;
        }
    }
@@ -93,25 +93,26 @@ function findTopicid($id, $array) {
             <div class="col-xs-12">
                 <h1>
                     <?php echo $title ?>
-                    <?php if (!empty($topic)) { ?>
-                    <span class="title-view-all">(<a href="genres.php">All Genres</a>)</span>
+                    <?php if (!empty($studio)) { ?>
+                    <span class="title-view-all">(<a href="studios.php">All Studios</a>)</span><br>
+                    <span class="small"><?php echo $studio['country'] ?></span>
                     <?php } ?>
                 </h1>
             </div>
         </div>
-        <?php if (empty($topic)) { ?>
+        <?php if (empty($studio)) { ?>
         <div class="row">
-            <?php foreach ($topics as $key => $topic) { ?>
-            <div class="col-xs-4 text-center genre-container">
-                <a href="genres.php?id=<?php echo $topic['topicid'] ?>"><?php echo $topic['description'] ?></a><br>
-                <span><?php echo $topic['moviecount'] ?> movies</span>
+            <?php foreach ($studios as $key => $studio) { ?>
+            <div class="col-xs-12 col-sm-6 text-center studio-container">
+                <a href="studios.php?id=<?php echo $studio['studioid'] ?>"><?php echo $studio['name'] ?></a><br>
+                <span><?php echo $studio['moviecount'] ?> movies</span>
             </div>
             <?php } ?>
         </div>
         <?php } else if (empty($movies)) { ?>
         <div class="row">
             <div class="col-xs-12">
-                <h3 class="text-danger">This genre doesn't have any movies yet.</h3>
+                <h3 class="text-danger">This studio doesn't have any movies yet.</h3>
             </div>
         </div>
         <?php } else { ?>
@@ -120,13 +121,13 @@ function findTopicid($id, $array) {
                 <div class="text-center sort-container hidden-xs">
                     <h4>Sort By:</h4>
                     <div class="btn-group text-center" role="group" aria-label="Sort">
-                        <a href="genres.php?<?php echo 'id=' . $topicid . '&' ?>sort=alpha" type="button" class="btn<?php if ($sort === 'alpha') echo ' active'; ?> btn-default">
+                        <a href="studios.php?<?php echo 'id=' . $studioid . '&' ?>sort=alpha" type="button" class="btn<?php if ($sort === 'alpha') echo ' active'; ?> btn-default">
                             <span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true"></span> Alphabetical
                         </a>
-                        <a href="genres.php?<?php echo 'id=' . $topicid . '&' ?>sort=rating" type="button" class="btn<?php if ($sort === 'rating') echo ' active'; ?> btn-default">
+                        <a href="studios.php?<?php echo 'id=' . $studioid . '&' ?>sort=rating" type="button" class="btn<?php if ($sort === 'rating') echo ' active'; ?> btn-default">
                             <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Rating
                         </a>
-                        <a href="genres.php?<?php echo 'id=' . $topicid . '&' ?>sort=popularity" type="button" class="btn<?php if ($sort === 'popularity') echo ' active'; ?> btn-default">
+                        <a href="studios.php?<?php echo 'id=' . $studioid . '&' ?>sort=popularity" type="button" class="btn<?php if ($sort === 'popularity') echo ' active'; ?> btn-default">
                             <span class="glyphicon glyphicon-fire" aria-hidden="true"></span> Popularity
                         </a>
                     </div>
@@ -134,13 +135,13 @@ function findTopicid($id, $array) {
                 <div class="text-center sort-container visible-xs">
                     <h4>Sort By:</h4>
                     <div class="btn-group text-center" role="group" aria-label="Sort">
-                        <a href="genres.php?<?php echo 'id=' . $topicid . '&' ?>sort=alpha" type="button" class="btn<?php if ($sort === 'alpha') echo ' active'; ?> btn-default">
+                        <a href="studios.php?<?php echo 'id=' . $studioid . '&' ?>sort=alpha" type="button" class="btn<?php if ($sort === 'alpha') echo ' active'; ?> btn-default">
                             <span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true"></span>
                         </a>
-                        <a href="genres.php?<?php echo 'id=' . $topicid . '&' ?>sort=rating" type="button" class="btn<?php if ($sort === 'rating') echo ' active'; ?> btn-default">
+                        <a href="studios.php?<?php echo 'id=' . $studioid . '&' ?>sort=rating" type="button" class="btn<?php if ($sort === 'rating') echo ' active'; ?> btn-default">
                             <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
                         </a>
-                        <a href="genres.php?<?php echo 'id=' . $topicid . '&' ?>sort=popularity" type="button" class="btn<?php if ($sort === 'popularity') echo ' active'; ?> btn-default">
+                        <a href="studios.php?<?php echo 'id=' . $studioid . '&' ?>sort=popularity" type="button" class="btn<?php if ($sort === 'popularity') echo ' active'; ?> btn-default">
                             <span class="glyphicon glyphicon-fire" aria-hidden="true"></span>
                         </a>
                     </div>
@@ -176,13 +177,13 @@ function findTopicid($id, $array) {
         <div class="row text-center">
             <ul class="pagination">
                 <?php if ($prevPage !== $page) { ?>
-                <li><a href="genres.php<?php echo $queryNoPage . 'page=' . $prevPage ?>" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                <li><a href="studios.php<?php echo $queryNoPage . 'page=' . $prevPage ?>" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
                 <?php } ?>
                 <?php for ($i = 1; $i <= $numPages; $i++) { ?>
-                <li <?php if ($i === $page) echo 'class="active"'; ?>><a data-page="<?php echo $i ?>" href="genres.php<?php echo $queryNoPage . 'page=' . $i ?>"><?php echo $i ?></a></li>
+                <li <?php if ($i === $page) echo 'class="active"'; ?>><a data-page="<?php echo $i ?>" href="studios.php<?php echo $queryNoPage . 'page=' . $i ?>"><?php echo $i ?></a></li>
                 <?php } ?>
                 <?php if ($nextPage !== $page) { ?>
-                <li><a href="genres.php<?php echo $queryNoPage . 'page=' . $nextPage ?>" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                <li><a href="studios.php<?php echo $queryNoPage . 'page=' . $nextPage ?>" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
                 <?php } ?>
             </ul>
         </div>

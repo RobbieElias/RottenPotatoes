@@ -33,7 +33,7 @@ require "./includes/config.php";
                 <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
             </p>
             <h2>What is <strong>Rotten Potatoes?</strong></h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            <p>Rotten Potatoes is a movie recommendation website that was built by the three uOttawa students below. This application was completed as the final group project for the <strong>CSI2132</strong> course.</p>
         </div>
     </div>
 
@@ -49,7 +49,7 @@ require "./includes/config.php";
             <div class="col-sm-4">
                 <img src="http://1aike31wshtt3k0e9u2nxtwz.wpengine.netdna-cdn.com/wp-content/uploads/2011/01/animal-portraits_alex-castro.jpg" class="img-responsive img-circle" alt="Image">
                 <h4 class="margin">Robbie Elias</h4>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <p>Computer Science student at <strong>uOttawa</strong>, graduated <strong>Heritage College</strong> in Computer Science.</p>
             </div>
             <div class="col-sm-4">
                 <img src="http://webneel.com/daily/sites/default/files/images/daily/05-2013/15-animal-portrait-photography.jpg" class="img-responsive img-circle" alt="Image">
