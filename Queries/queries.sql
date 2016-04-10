@@ -146,6 +146,7 @@ SELECT DISTINCT M.movieID, M.name, M.dateReleased, DTOR.name
 -- k. List the details of the Type Y movie that obtained the highest rating. Display the movie name
 -- together with the name(s) of the rater(s) who gave these ratings. (Here, Type Y refers to any
 -- movie type of your choice, e.g. Horror or Romance.)  
+
 SELECT U.firstName, U.lastName, T.MNAME
 	FROM(SELECT DISTINCT M.movieID as MID, M.name as MNAME, M.dateReleased, T.description
 		FROM movie M, movieTopics MT, topics T, watches W
@@ -166,6 +167,7 @@ SELECT U.firstName, U.lastName, T.MNAME
 -- l. Provide a query to determine whether Type Y movies are “more popular” than other movies.  
 -- (Here, Type Y refers to any movie type of your choice, e.g. Nature.) Yes, this query is open to
 -- your own interpretation!
+
 SELECT TC.description, T.S
 	FROM(SELECT T.TID AS TID, sum(T.R) AS S
 		FROM(SELECT T.topicID AS TID, W.rating AS R
@@ -176,21 +178,63 @@ SELECT TC.description, T.S
 		GROUP BY TID
 		ORDER BY SUM(T.R) DESC) T,topics TC
 	WHERE TC.topicID = T.TID
-	ORDER BY T.S DESC
+	ORDER BY T.S DESC;
 	
 -- m. Find the names, join‐date and profiling information (age‐range, gender, and so on) of the users
 -- that give the highest overall ratings. Display this information together with the names of the
 -- movies and the dates the ratings were done.
--- 
+
+SELECT U.firstName, U.lastName, P.ageRange, P.gender, P.ageRange, P.occupation, W.rating, W.dateWatched, M.name
+	FROM movieUser U, profile P, watches W, movie M
+	WHERE P.userID = U.userID
+	AND W.userID = U.userID
+	AND W.rating NOTNULL
+	AND M.movieID = W.movieID
+	ORDER BY RATING DESC;
+	
+ 
 -- n. Find the names, join‐date and profiling information (age‐range, gender, and so on) of the users
 -- that rated a specific movie (say movie Z) the most frequently. Display this information together
 -- with their comments, if any. (Here movie Z refers to a movie of your own choice, e.g. The
--- Hundred Foot Journey).*/
--- 
+-- Hundred Foot Journey).
+
+SELECT U.firstName, U.lastName, P.ageRange, P.gender, P.ageRange, P.occupation, W.rating, W.dateWatched, M.name
+	FROM(SELECT W.userID as ID
+		FROM watches W
+		WHERE W.movieID = 2
+		GROUP BY W.userID
+		ORDER BY count(W.userID) DESC) T, 
+		movieUser U, profile P, watches W, movie M
+	WHERE T.ID = U.userID
+	AND W.movieID = 2
+	AND P.userID = U.userID
+	AND W.userID = U.userID
+	AND W.rating NOTNULL
+	AND M.movieID = W.movieID; 
+	
 -- /*o. Find the names and emails of all users who gave ratings that are lower than that of a rater with
 -- a name called John Smith. (Note that there may be more than one rater with this name).*/
--- 
--- /*p. Find the names and emails of the users that provide the most diverse ratings within a specific
+
+SELECT U.firstName, U.lastName, U.email
+	FROM movieUser U, watches W
+	WHERE U.userID = W.userID
+	AND W.rating <=(SELECT  W.rating
+				FROM watches W, movieUser U
+				WHERE W.userID = U.userID
+				AND U.firstName = 'John'
+				AND U.lastName = 'Smith'
+				ORDER BY W.rating DESC
+				limit 1);
+
+-- p. Find the names and emails of the users that provide the most diverse ratings within a specific
 -- genre. Display this information together with the movie names and the ratings. For example,
 -- Jane Doe may have rated terminator 1 as a 1, Terminator 2 as a 10 and Terminator 3 as a 3.  
--- Clearly, she changes her mind quite often!*/
+-- Clearly, she changes her mind quite often!
+
+SELECT 
+	SELECT W.userID AS UID, W.movieID AS MID, W.rating AS R
+		FROM watches W
+		WHERE W.rating NOTNULL;
+
+
+	
