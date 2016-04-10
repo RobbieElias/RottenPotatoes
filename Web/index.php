@@ -44,9 +44,8 @@ $topGenres = $db->query('SELECT t.topicid, t.description, (SELECT COUNT(*) FROM 
             </p>
             <h2>Movie recommendations for all you couch <strong>potatoes</strong></h2>
             <?php if (!$loggedIn) { ?>
-            <p>
-                <a class="btn btn-success btn-lg" href="register.php" role="button">Register &raquo;</a>
-            </p>
+            <p><a class="btn btn-success btn-lg" href="register.php" role="button">Register &raquo;</a></p>
+            <p id="login-link" class="visible-xs"><a href="login.php" role="button">Login</a></p>
             <?php } ?>
         </div>
     </div>

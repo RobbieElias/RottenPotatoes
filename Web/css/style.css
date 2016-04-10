@@ -352,3 +352,8 @@ td .glyphicon-star {
 .container-account {
 	padding: 0;
 }
+
+#login-link {
+	font-size: 1.1em;
+	margin-top: -5px;
+}
