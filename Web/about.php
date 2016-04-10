@@ -42,19 +42,19 @@ require "./includes/config.php";
         <h2 class="text-center team-title">The Team</h2>
         <div class="row text-center">
             <div class="col-sm-4">
-                <img src="http://www.incrediblesnaps.com/wp-content/uploads/2013/05/38-Animal-Portrait-Photography-6.jpg" class="img-responsive img-circle" alt="Image">
+                <img src="images/portrait_isaac.jpg" class="img-responsive img-circle" alt="Image">
                 <h4 class="margin">Isaac Shannon</h4>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <p>Foot model, popular Kazhak pop singer, veteran of three world wars and cup stacking world record holder.</p>
             </div>
             <div class="col-sm-4">
-                <img src="http://1aike31wshtt3k0e9u2nxtwz.wpengine.netdna-cdn.com/wp-content/uploads/2011/01/animal-portraits_alex-castro.jpg" class="img-responsive img-circle" alt="Image">
+                <img src="images/portrait_robbie.jpg" class="img-responsive img-circle" alt="Image">
                 <h4 class="margin">Robbie Elias</h4>
-                <p>Computer Science student at <strong>uOttawa</strong>, graduated <strong>Heritage College</strong> in Computer Science.</p>
+                <p>Computer Science student at uOttawa, graduated Heritage College in Computer Science.</p>
             </div>
             <div class="col-sm-4">
-                <img src="http://webneel.com/daily/sites/default/files/images/daily/05-2013/15-animal-portrait-photography.jpg" class="img-responsive img-circle" alt="Image">
+                <img src="images/portrait_jesse.jpg" class="img-responsive img-circle" alt="Image">
                 <h4 class="margin">Jesse Desjardins</h4>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <p>Professional amateur, 4-time Grammy winning didgeridoo player, and master procrastinator.</p>
             </div>
         </div>
     </div>

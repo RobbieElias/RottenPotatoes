@@ -41,7 +41,7 @@ if (!empty($_POST) && $loggedIn) {
                 if ($insert > 0) {
                     $directorid = $db->lastInsertId('director_directorid_seq');
                 }
-            }
+            } 
             if (!empty($directorid)) {
                 try {
                     $db->bindMore(array("movieid"=>$movieid));
@@ -71,10 +71,19 @@ if (!empty($_POST) && $loggedIn) {
     } else if (!empty($_POST['delete-directorid'])) {
         $directorid = $_POST['delete-directorid'];
 
+        $db->bind("directorid",$directorid);
+        $hasMovies = $db->single('SELECT 1 FROM directs WHERE directorid = :directorid');
+
         $db->bindMore(array("movieid"=>$movieid,"directorid"=>$directorid));
         $delete = $db->query('DELETE FROM directs WHERE movieid = :movieid AND directorid = :directorid');
         if ($delete > 0) {
             $success = true;
+        }
+
+        // Delete the director completely if he/she doesn't have any movies
+        if (!empty($hasMovies)) {
+            $db->bind("directorid",$directorid);
+            $db->query('DELETE FROM director WHERE directorid = :directorid');
         }
         
         if (!$success) {
@@ -241,7 +250,7 @@ $relatedMovies = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posteru
 <html lang="en">
   <head>
     <?php include 'includes/meta.php';?>
-    <title>Movie - Rotten Potatoes</title>
+    <title><?php echo (!empty($movie)) ? $movie['name'] : 'Movie' ?> - Rotten Potatoes</title>
   </head>
   <body>
     <?php include 'includes/header.php';?>
