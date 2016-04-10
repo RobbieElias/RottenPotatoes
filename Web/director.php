@@ -18,7 +18,7 @@ $directorid = (int)$_GET['id'];
 
 // Get director details
 $db->bind('directorid', $directorid);
-$director = $db->row('SELECT d.directorid, d.name, d.dateofbirth FROM director d WHERE d.directorid = :directorid');
+$director = $db->row('SELECT d.directorid, d.name, EXTRACT(year FROM d.dateofbirth) AS year FROM director d WHERE d.directorid = :directorid');
 
 // Get movies
 $db->bind('directorid', $directorid);
@@ -43,7 +43,7 @@ $movies = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posterurl, (SE
         <?php } else { ?>
         <div class="row">
             <div class="col-md-12">
-                <h1 class="page-name-title"><?php echo $director['name'] ?><br><span class="small">Director<?php echo $director['dateofbirth'] ?></span></h1>
+                <h1 class="page-name-title"><?php echo $director['name'] ?><br><span class="small">Director<?php echo (!empty($director['year'])) ? ', Born ' . $director['year'] : '' ?></span></h1>
             </div>
         </div>
         <hr>
@@ -54,7 +54,10 @@ $movies = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posterurl, (SE
                     </div>
                     <div class="panel-body">
                         <div class="row">
-                            <?php foreach ($movies as $movie) { ?>
+                            <?php 
+                            if (!empty($movies)) {
+                                foreach ($movies as $movie) { 
+                            ?>
                             <div class="col-md-3 col-sm-6">
                                     <div class="thumbnail movie-thumbnail">
                                         <a class="movie-poster" href="movie.php?id=<?php echo $movie['movieid'] ?>" style="background-image: url('<?php echo $movie['posterurl'] ?>')"></a>
@@ -65,6 +68,13 @@ $movies = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posterurl, (SE
                                             <div class="rating-label pull-left"><?php echo round($movie['rating'], 1) ?>/5</div>
                                         </div>
                                     </div>
+                            </div>
+                            <?php 
+                                } 
+                            } else {
+                            ?>
+                            <div class="col-xs-12">
+                                <p><em>None</em></p>
                             </div>
                             <?php } ?>
                         </div>

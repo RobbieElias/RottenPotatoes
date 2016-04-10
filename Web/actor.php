@@ -18,7 +18,7 @@ $actorid = (int)$_GET['id'];
 
 // Get actor details
 $db->bind('actorid', $actorid);
-$actor = $db->row('SELECT d.actorid, d.name, d.dateofbirth FROM actor d WHERE d.actorid = :actorid');
+$actor = $db->row('SELECT d.actorid, d.name, EXTRACT(year FROM d.dateofbirth) AS year FROM actor d WHERE d.actorid = :actorid');
 
 // Get movies
 $db->bind('actorid', $actorid);
@@ -43,7 +43,7 @@ $movies = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posterurl, p.r
         <?php } else { ?>
         <div class="row">
             <div class="col-md-12">
-                <h1 class="page-name-title"><?php echo $actor['name'] ?><br><span class="small">Actor<?php echo $actor['dateofbirth'] ?></span></h1>
+                <h1 class="page-name-title"><?php echo $actor['name'] ?><br><span class="small">Actor<?php echo (!empty($actor['year'])) ? ', Born ' . $actor['year'] : '' ?></span></h1>
             </div>
         </div>
         <hr>
@@ -54,7 +54,10 @@ $movies = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posterurl, p.r
                     </div>
                     <div class="panel-body">
                         <div class="row">
-                            <?php foreach ($movies as $movie) { ?>
+                            <?php 
+                            if (!empty($movies)) {
+                                foreach ($movies as $movie) { 
+                            ?>
                             <div class="col-md-3 col-sm-6">
                                     <div class="thumbnail movie-thumbnail">
                                         <a class="movie-poster" href="movie.php?id=<?php echo $movie['movieid'] ?>" style="background-image: url('<?php echo $movie['posterurl'] ?>')"></a>
@@ -66,6 +69,13 @@ $movies = $db->query('SELECT m.movieid, m.name, m.datereleased, m.posterurl, p.r
                                             <div class="rating-label pull-left"><?php echo round($movie['rating'], 1) ?>/5</div>
                                         </div>
                                     </div>
+                            </div>
+                            <?php 
+                                } 
+                            } else {
+                            ?>
+                            <div class="col-xs-12">
+                                <p><em>None</em></p>
                             </div>
                             <?php } ?>
                         </div>
