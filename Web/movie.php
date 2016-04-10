@@ -153,17 +153,17 @@ else {
 
 // Get genres
 $db->bind('movieid', $movieid);
-$genres = $db->query('SELECT t.topicid, t.description FROM topics t JOIN movietopics m ON t.topicid = m.topicid AND m.movieid = :movieid');
+$genres = $db->query('SELECT t.topicid, t.description FROM topics t JOIN movietopics m ON t.topicid = m.topicid AND m.movieid = :movieid ORDER BY description');
 $genresTitle = "Genre";
 $genresText = "";
 if (!empty($genres)) {
     foreach ($genres as $key => $genre) {
         if ($isEdit) {
             $genresText .= '<form method="POST" id="form_delete_genre_' . $genre['topicid'] . '">' .
-                                    $genre['description'] . '(<a href="#" onclick="document.getElementById(\'form_delete_genre_' .
-                                    $genre['topicid'] . '\').submit();">Delete</a>)' .
-                                    '<input type="hidden" name="delete-topicid" value="' . $genre['topicid'] . '" />' .
-                              '</form>';
+                                $genre['description'] . '(<a href="#" onclick="document.getElementById(\'form_delete_genre_' .
+                                $genre['topicid'] . '\').submit();">Delete</a>)' .
+                                '<input type="hidden" name="delete-topicid" value="' . $genre['topicid'] . '" />' .
+                            '</form>';
         }
         else {
             if ($key > 0)
@@ -223,7 +223,7 @@ $db->bindMore(array("userid"=>$tempid,"movieid"=>$movieid));
 $userWatches = $db->query('SELECT u.userid, u.firstname, u.lastname, w.rating FROM movieuser u JOIN watches w ON u.userid = w.userid WHERE u.userid != :userid AND w.movieid = :movieid ORDER BY w.datewatched DESC LIMIT 15');
 
 // Get related movies
-$topicid = 0;
+$topicid = -1;
 if (!empty($genres)) {
     $movieGenre = $genres[array_rand($genres)]; // get 1 genre associated to the movie
     if (!empty($movieGenre))

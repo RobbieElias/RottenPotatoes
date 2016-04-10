@@ -69,6 +69,9 @@ $topGenres = $db->query('SELECT t.topicid, t.description, (SELECT COUNT(*) FROM 
                     </div>
             </div>
             <?php } ?>
+            <div class="col-xs-12">
+                <p class="text-right"><a href="movies.php">View All</a></p>
+            </div>
         </div>
         <hr>
         <div class="row">

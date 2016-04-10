@@ -14,7 +14,7 @@ $myProfile = false;
 
 if (!empty($_GET['id']) && ctype_digit($_GET['id'])) {
     $userid = (int)$_GET['id'];
-    if ($userid == $_SESSION['userid'])
+    if ($loggedIn && $userid == $_SESSION['userid'])
         $myProfile = true;
 } 
 else if (!empty($_SESSION['userid'])) {
@@ -82,7 +82,7 @@ function getAgeRange($user) {
 <html lang="en">
   <head>
     <?php include 'includes/meta.php';?>
-    <title><?php echo $user['firstname'] ?> - Rotten Potatoes</title>
+    <title><?php echo (!empty($user)) ? $user['firstname'] : 'Profile' ?> - Rotten Potatoes</title>
   </head>
   <body>
     <?php include 'includes/header.php';?>

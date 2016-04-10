@@ -13,14 +13,18 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="index.php">Home</a></li>
                 <li><a class="hidden-sm" href="movies.php">Movies</a></li>
-                <li><a class="hidden-sm" href="genres.php">Genres</a></li>
-                <li><a class="hidden-sm" href="studios.php">Studios</a></li>
-                <li role="presentation" class="dropdown visible-sm">
+                <li><a class="hidden-sm" href="actors.php">Actors</a></li>
+                <li class="visible-xs"><a href="directors.php">Directors</a></li>
+                <li class="visible-xs"><a href="genres.php">Genres</a></li>
+                <li class="visible-xs"><a href="studios.php">Studios</a></li>
+                <li role="presentation" class="dropdown hidden-xs">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                         More  <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="movies.php">Movies</a></li>
+                        <li><a class="visible-sm" href="movies.php">Movies</a></li>
+                        <li><a class="visible-sm" href="actors.php">Actors</a></li>
+                        <li><a href="directors.php">Directors</a></li>
                         <li><a href="genres.php">Genres</a></li>
                         <li><a href="studios.php">Studios</a></li>
                     </ul>

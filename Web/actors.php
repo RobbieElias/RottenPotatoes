@@ -1,5 +1,4 @@
 <?php
-
 # include the config file
 require "./includes/config.php";
 
@@ -13,8 +12,8 @@ $page = 1;
 if (!empty($_GET['page']) && ctype_digit($_GET['page'])) {
     $page = (int)$_GET['page'];
 }
+
 $sort = "rating";
-$title = "Top Rated Actors";
 if (!empty($_GET['sort']) && in_array($_GET['sort'], array('rating', 'alpha', 'popularity'))) {
     $sort = $_GET['sort'];
 }
@@ -24,18 +23,19 @@ $numPages = (int)ceil($actorcount / 50);
 $prevPage = ($page === 1) ? $page : $page - 1;
 $nextPage = ($page === $numPages) ? $page : $page + 1;
 
-$orderBy = 'ORDER BY rating DESC';
+$title = "Top Rated Actors";
+$orderBy = 'ORDER BY rating DESC, moviecount DESC, name';
 if ($sort === 'alpha') {
     $title = "Actors";
     $orderBy = 'ORDER BY name';
 }
 else if ($sort === 'popularity') {
     $title = "Popular Actors";
-    $orderBy = 'ORDER BY watchescount DESC';
+    $orderBy = 'ORDER BY moviecount DESC, rating DESC, name';
 }
-$offset = ($page - 1) * 50;
 
-$actors = $db->query('SELECT a.actorID, a.name, a.dateOfBirth, (SELECT coalesce(AVG(w.rating), 0) 	FROM watches w, movie m, actorPlays p WHERE a.actorID = p.actorID AND p.movieID = w.movieid and w.movieid = m.movieid) AS rating, (SELECT COUNT(*) FROM watches w, movie m, actorPlays p WHERE a.actorID = p.actorID AND p.movieID = w.movieid and w.movieid = m.movieid) AS watchcount FROM actor a ' . $orderBy . ' LIMIT 50 OFFSET ' . $offset);
+$offset = ($page - 1) * 50;
+$actors = $db->query('SELECT a.actorid, a.name, a.dateofbirth, (SELECT coalesce(AVG(w.rating), 0) FROM watches w JOIN movie m ON w.movieid = m.movieid JOIN actorplays p1 ON p1.actorid = a.actorid AND p1.movieid = m.movieid) AS rating, (SELECT COUNT(*) FROM actorplays p2 WHERE p2.actorid = a.actorid) AS moviecount FROM actor a ' . $orderBy . ' LIMIT 50 OFFSET ' . $offset);
 
 parse_str($_SERVER['QUERY_STRING'], $queryArray);
 unset($queryArray['page']);
@@ -99,20 +99,20 @@ $queryNoPage = (empty($queryNoPage) ? '?' : '?' . $queryNoPage . '&');
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Movie<?php if ($sort === 'alpha') echo '&nbsp;&#9660;'; ?></th>
-                            <th class="hidden-xs">Year</th>
+                            <th>Name<?php if ($sort === 'alpha') echo '&nbsp;&#9660;'; ?></th>
+                            <th class="hidden-xs">Born</th>
                             <th class="text-right">Rating<?php if ($sort === 'rating') echo '&nbsp;&#9660;'; ?></th>
-                            <th class="text-right">Views<?php if ($sort === 'popularity') echo '&nbsp;&#9660;'; ?></th>
+                            <th class="text-right">Movies<?php if ($sort === 'popularity') echo '&nbsp;&#9660;'; ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($actors as $key => $actor) { ?>
-                        <tr class="actor-row" data-id="<?php echo $actor['actorid'] ?>">
+                        <tr class="data-row" data-id="<?php echo $actor['actorid'] ?>">
                             <td><?php echo (($key + 1) + (($page - 1) * 50)) ?></td>
                             <td><?php echo $actor['name'] ?></td>
-                            <td class="hidden-xs"><?php echo $actor['datereleased'] ?></td>
+                            <td class="hidden-xs"><?php echo $actor['dateofbirth'] ?></td>
                             <td class="text-right"><?php echo round($actor['rating'], 1) ?> <span class="glyphicon glyphicon-star" aria-hidden="true"></span></td>
-                            <td class="text-right"><?php echo $actor['watchescount'] ?></td>
+                            <td class="text-right"><?php echo $actor['moviecount'] ?></td>
                         </tr>
                         <?php } ?>
                     </tbody>
@@ -137,12 +137,10 @@ $queryNoPage = (empty($queryNoPage) ? '?' : '?' . $queryNoPage . '&');
     <?php include 'includes/scripts.php';?>
     <script type="text/javascript">
         $(document).ready(function() {
-
-            $('.actor-row').on('click', function(e) {
-                var movieid = $(this).data('id');
+            $('.data-row').on('click', function(e) {
+                var actorid = $(this).data('id');
                 window.location = 'actor.php?id=' + actorid;
             });
-
         });
     </script>
   </body>

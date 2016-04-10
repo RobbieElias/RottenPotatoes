@@ -87,8 +87,9 @@ a:focus, a:hover {
 }
 
 h1 > .small {
-	font-size: 0.5em;
-	opacity: 0.8;
+	font-size: 0.4em;
+	opacity: 0.9;
+    line-height: 1.5em;
 }
 
 .btn-success {
