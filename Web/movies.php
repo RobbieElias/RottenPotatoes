@@ -107,7 +107,7 @@ $queryNoPage = (empty($queryNoPage) ? '?' : '?' . $queryNoPage . '&');
                     </thead>
                     <tbody>
                         <?php foreach ($movies as $key => $movie) { ?>
-                        <tr class="movie-row" data-id="<?php echo $movie['movieid'] ?>">
+                        <tr class="table-row" data-id="<?php echo $movie['movieid'] ?>">
                             <td><?php echo (($key + 1) + (($page - 1) * 50)) ?></td>
                             <td><span class="glyphicon glyphicon-star" aria-hidden="true"></span> <?php echo round($movie['rating'], 1) ?></td>
                             <td><?php echo $movie['name'] ?></td>
@@ -138,7 +138,7 @@ $queryNoPage = (empty($queryNoPage) ? '?' : '?' . $queryNoPage . '&');
     <script type="text/javascript">
         $(document).ready(function() {
 
-            $('.movie-row').on('click', function(e) {
+            $('.table-row').on('click', function(e) {
                 var movieid = $(this).data('id');
                 window.location = 'movie.php?id=' + movieid;
             });

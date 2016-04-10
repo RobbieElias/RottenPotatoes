@@ -61,6 +61,36 @@ a:focus, a:hover {
 	background: #723939;	
 }
 
+.navbar-form {
+	margin-top: 12px;
+}
+
+.navbar-form input {
+	height: 28px;
+}
+
+.navbar-form button {
+	height: 28px;
+}
+
+.navbar-form .glyphicon-search {
+	top: 0;
+}
+
+.form-control:focus {
+  	border-color: #7f9d95;
+  	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(73,116,104, 0.8);
+}
+
+.btn:focus,.btn:active {
+   	outline: none !important;
+}
+
+h1 > .small {
+	font-size: 0.5em;
+	opacity: 0.8;
+}
+
 .btn-success {
     color: #fff;
     background-color: #588C7E;
@@ -264,21 +294,26 @@ td .glyphicon-star {
 	margin-bottom: 4px;
 }
 
-.movie-row {
+.table-row {
 	cursor: pointer;
 }
 
-.genre-container {
+.genre-container, .studio-container {
 	padding: 10px 0;
 }
 
-.genre-container > a {
+.genre-container > a, .studio-container > a {
 	font-size: 1.3em;
 	text-transform: capitalize;
 	line-height: 1em;
+	display:inline-block;
+	overflow: hidden;
+  	text-overflow: ellipsis;
+  	white-space: nowrap;
+  	max-width: 90%;
 }
 
-.genre-container > span {
+.genre-container > span, .studio-container > span {
 	font-size: 0.8em;
 	font-weight: bold;
 }
@@ -290,8 +325,7 @@ td .glyphicon-star {
 .profile-img-container {
 	text-align: center;
 	background-color: #c18b5b;
-	padding: 20px 0 0 0;
-	border-bottom: solid 2px #c18b5b;
+	padding: 20px 0 2px 0;
 	color: white;
 	font-size: 10em;
 }

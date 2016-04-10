@@ -188,7 +188,7 @@ if (!empty($studios)) {
     foreach ($studios as $key => $studio) {
         if ($key > 0)
             $studiosText .= ', ';
-        $studiosText .= '<a href="studio.php?id=' . $studio['studioid'] . '">' . $studio['name'] . '</a>';
+        $studiosText .= '<a href="studios.php?id=' . $studio['studioid'] . '">' . $studio['name'] . '</a>';
     }
     if (count($studios) > 1) {
         $studiosTitle = "Studios";

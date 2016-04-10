@@ -12,11 +12,21 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="index.php">Home</a></li>
-                <li><a href="movies.php">Movies</a></li>
-                <li><a href="genres.php">Genres</a></li>
+                <li><a class="hidden-sm" href="movies.php">Movies</a></li>
+                <li><a class="hidden-sm" href="genres.php">Genres</a></li>
+                <li><a class="hidden-sm" href="studios.php">Studios</a></li>
+                <li role="presentation" class="dropdown visible-sm">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        More  <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="movies.php">Movies</a></li>
+                        <li><a href="genres.php">Genres</a></li>
+                        <li><a href="studios.php">Studios</a></li>
+                    </ul>
+                </li>
                 <?php if (!$loggedIn) { ?>
                 <li><a href="login.php">Login</a></li>
-                <li><a href="register.php">Register</a></li>
                 <?php } else { ?>
                 <li role="presentation" class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -31,6 +41,16 @@
                 </li>
                 <?php } ?>
             </ul>
+            <form class="navbar-form navbar-right navbar-input-group" role="search" method="GET" action="search.php">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="term" placeholder="Search Movies, Actors, ..." value="<?php if (!empty($_GET['term'])) echo $_GET['term']; ?>">
+                    <div class="input-group-btn">
+                        <button id="nav-search" type="submit" class="btn btn-md btn-default" aria-label="Search">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </nav>

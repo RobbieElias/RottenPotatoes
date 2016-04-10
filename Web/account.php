@@ -227,7 +227,7 @@ function filterString($string, $maxLength) {
   <body>
     <?php include 'includes/header.php';?>
     <div class="container container-account">
-        <h1>Account Settings</h1>
+        <h1>Account Settings <span class="title-view-all">(<a href="profile.php">Profile</a>)</span></h1>
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" <?php if ($tab === 'account') echo 'class="active"' ?>><a id="#tab-link-account" href="#account" aria-controls="account" role="tab" data-toggle="tab">Account</a></li>
             <li role="presentation" <?php if ($tab === 'profile') echo 'class="active"' ?>><a id="#tab-link-profile" href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
