@@ -35,7 +35,7 @@ else if ($sort === 'popularity') {
 }
 
 $offset = ($page - 1) * 50;
-$directors = $db->query('SELECT d1.directorid, d1.name, d1.dateofbirth, (SELECT coalesce(AVG(w.rating), 0) FROM watches w JOIN movie m ON w.movieid = m.movieid JOIN directs d2 ON d2.directorid = d1.directorid AND d2.movieid = m.movieid) AS rating, (SELECT COUNT(*) FROM directs d3 WHERE d3.directorid = d1.directorid) AS moviecount FROM director d1 ' . $orderBy . ' LIMIT 50 OFFSET ' . $offset);
+$directors = $db->query('SELECT d1.directorid, d1.name, EXTRACT(year FROM d1.dateofbirth) AS year, (SELECT coalesce(AVG(w.rating), 0) FROM watches w JOIN movie m ON w.movieid = m.movieid JOIN directs d2 ON d2.directorid = d1.directorid AND d2.movieid = m.movieid) AS rating, (SELECT COUNT(*) FROM directs d3 WHERE d3.directorid = d1.directorid) AS moviecount FROM director d1 ' . $orderBy . ' LIMIT 50 OFFSET ' . $offset);
 
 parse_str($_SERVER['QUERY_STRING'], $queryArray);
 unset($queryArray['page']);
@@ -110,7 +110,7 @@ $queryNoPage = (empty($queryNoPage) ? '?' : '?' . $queryNoPage . '&');
                         <tr class="data-row" data-id="<?php echo $director['directorid'] ?>">
                             <td><?php echo (($key + 1) + (($page - 1) * 50)) ?></td>
                             <td><?php echo $director['name'] ?></td>
-                            <td class="hidden-xs"><?php echo $director['dateofbirth'] ?></td>
+                            <td class="hidden-xs"><?php echo $director['year'] ?></td>
                             <td class="text-right"><?php echo round($director['rating'], 1) ?> <span class="glyphicon glyphicon-star" aria-hidden="true"></span></td>
                             <td class="text-right"><?php echo $director['moviecount'] ?></td>
                         </tr>

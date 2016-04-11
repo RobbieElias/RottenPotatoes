@@ -18,7 +18,7 @@ $actorid = (int)$_GET['id'];
 
 // Get actor details
 $db->bind('actorid', $actorid);
-$actor = $db->row('SELECT d.actorid, d.name, EXTRACT(year FROM d.dateofbirth) AS year FROM actor d WHERE d.actorid = :actorid');
+$actor = $db->row('SELECT a.actorid, a.name, EXTRACT(year FROM a.dateofbirth) AS year FROM actor a WHERE a.actorid = :actorid');
 
 // Get movies
 $db->bind('actorid', $actorid);

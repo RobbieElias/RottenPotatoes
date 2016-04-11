@@ -35,7 +35,7 @@ else if ($sort === 'popularity') {
 }
 
 $offset = ($page - 1) * 50;
-$actors = $db->query('SELECT a.actorid, a.name, a.dateofbirth, (SELECT coalesce(AVG(w.rating), 0) FROM watches w JOIN movie m ON w.movieid = m.movieid JOIN actorplays p1 ON p1.actorid = a.actorid AND p1.movieid = m.movieid) AS rating, (SELECT COUNT(*) FROM actorplays p2 WHERE p2.actorid = a.actorid) AS moviecount FROM actor a ' . $orderBy . ' LIMIT 50 OFFSET ' . $offset);
+$actors = $db->query('SELECT a.actorid, a.name, EXTRACT(year FROM a.dateofbirth) AS year, (SELECT coalesce(AVG(w.rating), 0) FROM watches w JOIN movie m ON w.movieid = m.movieid JOIN actorplays p1 ON p1.actorid = a.actorid AND p1.movieid = m.movieid) AS rating, (SELECT COUNT(*) FROM actorplays p2 WHERE p2.actorid = a.actorid) AS moviecount FROM actor a ' . $orderBy . ' LIMIT 50 OFFSET ' . $offset);
 
 parse_str($_SERVER['QUERY_STRING'], $queryArray);
 unset($queryArray['page']);
@@ -110,7 +110,7 @@ $queryNoPage = (empty($queryNoPage) ? '?' : '?' . $queryNoPage . '&');
                         <tr class="data-row" data-id="<?php echo $actor['actorid'] ?>">
                             <td><?php echo (($key + 1) + (($page - 1) * 50)) ?></td>
                             <td><?php echo $actor['name'] ?></td>
-                            <td class="hidden-xs"><?php echo $actor['dateofbirth'] ?></td>
+                            <td class="hidden-xs"><?php echo $actor['year'] ?></td>
                             <td class="text-right"><?php echo round($actor['rating'], 1) ?> <span class="glyphicon glyphicon-star" aria-hidden="true"></span></td>
                             <td class="text-right"><?php echo $actor['moviecount'] ?></td>
                         </tr>
