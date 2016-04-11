@@ -1,5 +1,4 @@
-﻿--  Put SQL queries in this directory
--- (40 marks) Create a number of SQL queries to explore this data.  The following is a suggested list of
+﻿-- (40 marks) Create a number of SQL queries to explore this data.  The following is a suggested list of
 -- “typical” queries that should be implemented. The general idea is that you should be able to explore
 -- the data as contained in your database, in an “ad hoc” fashion.
  

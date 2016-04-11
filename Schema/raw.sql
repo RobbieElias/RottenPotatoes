@@ -1,4 +1,4 @@
-﻿-- Put raw schema code here
+﻿-- Raw schema code used to generate the Database
 SET search_path TO 'MovieRecommender';
 
 CREATE TABLE movieUser (
@@ -41,7 +41,7 @@ CREATE TABLE watches (
 
 CREATE TABLE topics (
    topicID           SERIAL,
-   description       text NOT NULL,
+   description       text UNIQUE NOT NULL,
    PRIMARY KEY (topicId)
 );
 
@@ -56,7 +56,7 @@ CREATE TABLE movieTopics (
 
 CREATE TABLE studio (
    studioID          SERIAL,
-   name              text UNIQUE NOT NULL,  
+   name              text NOT NULL,  
    country           text,
    PRIMARY KEY (studioId)
 );
@@ -69,7 +69,7 @@ CREATE TABLE sponsors (
 
 CREATE TABLE director (
    directorID        SERIAL,
-   name              text UNIQUE NOT NULL,  
+   name              text NOT NULL,  
    dateOfBirth       date,
    PRIMARY KEY (directorId)
 ); 
@@ -82,7 +82,7 @@ CREATE TABLE directs (
 
 CREATE TABLE actor (
    actorID           SERIAL,
-   name              text UNIQUE NOT NULL,  
+   name              text NOT NULL,  
    dateOfBirth       date,
    PRIMARY KEY (actorId)
 );
