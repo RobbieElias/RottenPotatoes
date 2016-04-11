@@ -17,36 +17,44 @@ SELECT *
 -- the name of the movie from a list, and all the details of the actors, together with their roles,
 -- should be displayed on the screen.*/    
  
-SELECT A.name, A.dateOfBirth, M.name
- 	FROM actor A, movie M, actorPlays AP
- 	WHERE M.movieID = AP.movieID 
- 	AND AP.actorID = A.actorID
- 	AND M.name = 'Inception';
+SELECT M.name AS movie, A.actorid, A.name AS actor, AP.role, A.dateOfBirth
+ 	FROM actor A
+ 	JOIN actorPlays AP ON AP.actorID = A.actorID
+ 	JOIN movie M ON M.movieID = AP.movieID 
+ 	WHERE M.name = 'Star Wars';
  
 -- c. For each user‐specified category of movie, list the details of the director(s) and studio(s),
 -- together with the date that the movie has been released. The user should be able to select the
 -- category (e.g. Horror or Nature) from a list.
 
-SELECT D.name, S.name, T.description
+SELECT M.name AS movie, M.datereleased, D.name AS director, S.name AS studio, T.description AS genre
 	FROM director D, movie M, studio S, sponsors SP, topics T, movieTopics MT, directs DR
 	WHERE T.topicID = MT.topicID
 	AND MT.movieID = M.movieID
 	AND M.movieID = SP.movieID
 	AND SP.studioID = S.studioID
 	AND DR.movieID = M.movieID
-	AND DR.directorID = D.directorID;
+	AND DR.directorID = D.directorID
+	AND T.description = 'Crime'
+	ORDER BY movie, director, studio;
 
  -- d. Display the information about the actor that appeared the most often in the movies, as
 -- contained in your database. Display this information together with the details of the director(s)
 -- and the studio(s) that s(he) worked with.
 
-SELECT actorID, name, dateOfBirth
-	FROM actor
-	WHERE actorID = (SELECT actorID
+SELECT A.actorID, A.name AS actor, A.dateOfBirth, D.name AS director, S.name AS studio
+	FROM actor A, actorPlays AP, director D, movie M, studio S, sponsors SP, directs DR
+	WHERE AP.actorID = A.actorID
+	AND AP.movieID = M.movieID
+	AND M.movieID = SP.movieID
+	AND SP.studioID = S.studioID
+	AND DR.movieID = M.movieID
+	AND DR.directorID = D.directorID
+	AND A.actorID = (SELECT actorID
 				FROM actorPlays 
 				GROUP BY actorID
-				order by count(actorID) desc
-				limit 1);
+				ORDER BY count(actorID) DESC
+				LIMIT 1);
 				
 
 -- e. Display the information about the two actors that appeared the most often together in the
@@ -79,90 +87,70 @@ SELECT A.name
 -- #################################
 -- f. Find the names of the ten movies with the highest overall ratings in your database.
 
-SELECT M.movieID, M.name
-	FROM(SELECT T.ID AS ID
-		FROM (SELECT DISTINCT M.movieID AS ID, W.rating AS R
-			FROM watches W, movie M
-			WHERE M.movieID = W.movieID
-			AND W.rating NOTNULL) T	
-		GROUP BY T.ID
-		ORDER BY SUM(T.R) DESC
-		limit 10) T,
-		movie M
-	WHERE T.ID = M.movieID;
-	
+SELECT M.movieID, M.name, (SELECT coalesce(AVG(W.rating), 0) FROM watches W WHERE W.movieID = M.movieID) rating 
+	FROM movie M 
+	ORDER BY rating DESC, name LIMIT 10;
+
 -- g. Find the movie(s) with the highest overall rating in your database. Display all the movie details,
 -- together with the topics (tags) associated with it.
 
-SELECT M.movieID, M.name, TC.description
-	FROM(SELECT T.ID AS ID
-		FROM (SELECT DISTINCT M.movieID AS ID, W.rating AS R
-			FROM watches W, movie M
-			WHERE M.movieID = W.movieID
-			AND W.rating NOTNULL) T	
-		GROUP BY T.ID
-		ORDER BY SUM(T.R) DESC
-		limit 1) T,
-		movie M,
-		topics TC,
-		movieTopics MT
-	WHERE T.ID = M.movieID
-	AND M.movieID = MT.movieID
-	AND MT.topicID = TC.topicID;
+SELECT M.movieID, M.name, M.datereleased, T.description AS genre
+	FROM movie M, topics T, movietopics MT
+	WHERE M.movieID = MT.movieID
+	AND MT.topicID = t.topicID
+	AND (SELECT coalesce(AVG(W.rating), 0) FROM watches W WHERE W.movieID = M.movieID) = 
+		(SELECT coalesce(AVG(W.rating), 0) AS rating FROM watches W GROUP BY W.movieID ORDER BY rating DESC LIMIT 1);
 
 
 -- h. Find the total number of rating for each movie, for each user. That is, the data should be
 -- grouped by the movie, the specific users and the numeric ratings they have received.
 
-SELECT U.firstName, U.lastName, M.name, W.rating
+SELECT U.firstName, U.lastName, M.name AS movie, W.rating
 	FROM movieUser U, movie M, watches W
 	WHERE W.userID = U.userID
-	AND M.movieID = W.movieID;
+	AND M.movieID = W.movieID
+	AND W.rating IS NOT NULL
+	ORDER BY movie, firstname, lastname;
 
 -- i. Display the details of the movies that have not been rated since January 2016.
 
 SELECT M.name, M.movieID, M.dateReleased
 	FROM movie M
-	WHERE M.movieID NOT IN (SELECT W.movieID as MID
-					FROM watches W
-					WHERE W.dateWatched > '2016-04-08');
+	WHERE (SELECT COUNT(*)
+		FROM watches W
+		WHERE W.movieID = M.movieID
+		AND W.rating IS NOT NULL
+		AND W.dateWatched > '2016-01-01') = 0;
 	
 -- j. Find the names, release dates and the names of the directors of the movies that obtained rating
 -- that is lower than any rating given by user X. Order your results by the dates of the ratings.
 -- (Here, X refers to any user of your choice.)
-SELECT DISTINCT M.movieID, M.name, M.dateReleased, DTOR.name
-	FROM(SELECT W.rating as R
-		FROM watches W, movieUser U
-		WHERE W.userID = 70
-		AND W.rating NOTNULL
-		ORDER BY W.rating DESC
-		LIMIT 1) T, movie M, watches W, director DTOR, directs DECTS
-	WHERE M.movieID = W.movieID
-	AND W.rating NOTNULL
-	AND W.rating < T.R
-	AND M.movieID = DECTS.movieID
-	AND DECTS.directorID = DTOR.directorID;
+
+SELECT M.movieID, M.name AS movie, M.dateReleased, D.name AS director, W.rating, W.datewatched
+	FROM movie M, watches W, director D, directs DR
+	WHERE M.movieID = DR.movieID
+	AND DR.directorID = D.directorID
+	AND W.movieId = M.movieID
+	AND W.rating < ANY (SELECT rating
+				FROM watches WHERE userid = 60) -- change userid here
+	ORDER BY W.datewatched DESC;
 
 -- k. List the details of the Type Y movie that obtained the highest rating. Display the movie name
 -- together with the name(s) of the rater(s) who gave these ratings. (Here, Type Y refers to any
 -- movie type of your choice, e.g. Horror or Romance.)  
 
-SELECT U.firstName, U.lastName, T.MNAME
-	FROM(SELECT DISTINCT M.movieID as MID, M.name as MNAME, M.dateReleased, T.description
-		FROM movie M, movieTopics MT, topics T, watches W
-		WHERE M.movieID = MT.movieID
-		AND MT.topicID = 15
-		AND T.topicID = 15
-		AND MT.movieID = M.movieID
-		AND W.movieID = M.movieID 
-		AND W.rating >= (SELECT DISTINCT W.rating
-					FROM watches W
-					WHERE W.rating NOTNULL
-					ORDER BY W.rating DESC
-					LIMIT 1)
-		limit 1) T, movieUser U, watches W
-	WHERE W.movieID = T.MID
-	AND W.userID = U.userID;
+SELECT M.name AS movie, U.firstName, U.lastName, W.rating
+	FROM movie M, movieUser U, watches W
+	WHERE M.movieID = W.movieId
+	AND W.userID = U.userID
+	AND M.movieID = (SELECT W2.movieID 
+				FROM watches W2, movieTopics MT, TOPICS T 
+				WHERE W2.movieID = MT.movieID 
+				AND T.topicID = MT.topicID 
+				AND T.description = 'Crime' -- change genre here 
+				GROUP BY W2.movieID 
+				ORDER BY AVG(W2.rating) 
+				DESC LIMIT 1);
 
 -- l. Provide a query to determine whether Type Y movies are “more popular” than other movies.  
 -- (Here, Type Y refers to any movie type of your choice, e.g. Nature.) Yes, this query is open to
@@ -184,57 +172,49 @@ SELECT TC.description, T.S
 -- that give the highest overall ratings. Display this information together with the names of the
 -- movies and the dates the ratings were done.
 
-SELECT U.firstName, U.lastName, P.ageRange, P.gender, P.ageRange, P.occupation, W.rating, W.dateWatched, M.name
+SELECT U.firstName, U.lastName, P.ageRange, P.gender, P.ageRange, P.occupation, W.rating, W.dateWatched, M.name AS movie
 	FROM movieUser U, profile P, watches W, movie M
 	WHERE P.userID = U.userID
 	AND W.userID = U.userID
 	AND W.rating NOTNULL
 	AND M.movieID = W.movieID
-	ORDER BY RATING DESC;
+	AND (SELECT AVG(W2.rating) FROM watches W2 WHERE W2.userID = U.userID) >= 4 -- users with average ratings of 4+
+	ORDER BY firstName, lastName DESC;
 	
- 
--- n. Find the names, join‐date and profiling information (age‐range, gender, and so on) of the users
--- that rated a specific movie (say movie Z) the most frequently. Display this information together
--- with their comments, if any. (Here movie Z refers to a movie of your own choice, e.g. The
--- Hundred Foot Journey).
-
-SELECT U.firstName, U.lastName, P.ageRange, P.gender, P.ageRange, P.occupation, W.rating, W.dateWatched, M.name
-	FROM(SELECT W.userID as ID
-		FROM watches W
-		WHERE W.movieID = 2
-		GROUP BY W.userID
-		ORDER BY count(W.userID) DESC) T, 
-		movieUser U, profile P, watches W, movie M
-	WHERE T.ID = U.userID
-	AND W.movieID = 2
-	AND P.userID = U.userID
-	AND W.userID = U.userID
-	AND W.rating NOTNULL
-	AND M.movieID = W.movieID; 
-	
--- /*o. Find the names and emails of all users who gave ratings that are lower than that of a rater with
+-- o. Find the names and emails of all users who gave ratings that are lower than that of a rater with
 -- a name called John Smith. (Note that there may be more than one rater with this name).*/
 
 SELECT U.firstName, U.lastName, U.email
 	FROM movieUser U, watches W
 	WHERE U.userID = W.userID
-	AND W.rating <=(SELECT  W.rating
+	AND W.rating < ANY (SELECT  W.rating
 				FROM watches W, movieUser U
 				WHERE W.userID = U.userID
 				AND U.firstName = 'John'
-				AND U.lastName = 'Smith'
-				ORDER BY W.rating DESC
-				limit 1);
+				AND U.lastName = 'Smith')
+	GROUP BY U.firstName, U.lastName, U.email
+	ORDER BY U.firstName, U.lastName;
 
 -- p. Find the names and emails of the users that provide the most diverse ratings within a specific
 -- genre. Display this information together with the movie names and the ratings. For example,
 -- Jane Doe may have rated terminator 1 as a 1, Terminator 2 as a 10 and Terminator 3 as a 3.  
 -- Clearly, she changes her mind quite often!
 
-SELECT 
-	SELECT W.userID AS UID, W.movieID AS MID, W.rating AS R
-		FROM watches W
-		WHERE W.rating NOTNULL;
+SELECT U.firstName, U.lastName, U.email, T.description AS genre, M.name AS movie, W.rating
+	FROM movieUser U, movie M, topics T, movieTopics MT, watches W
+	WHERE U.userID = W.userID
+	AND W.movieID = M.movieID
+	AND MT.movieID = M.movieID
+	AND T.topicID = MT.topicID
+	AND W.rating IS NOT NULL
+	AND T.description = 'Animation' -- change genre here
+	AND EXISTS (SELECT 1 
+			FROM watches W2, movieTopics MT2 
+			WHERE W2.movieID = MT2.movieID 
+			AND W2.userID = U.userID 
+			AND MT2.topicID = MT.topicID 
+			HAVING (MAX(W2.rating) - MIN(W2.rating)) >= 3)
+	ORDER BY firstName, lastName, rating;
 
 
 	

@@ -14,10 +14,7 @@
                 <li><a href="index.php">Home</a></li>
                 <li><a class="hidden-sm" href="movies.php">Movies</a></li>
                 <li><a class="hidden-sm" href="actors.php">Actors</a></li>
-                <li class="visible-xs"><a href="directors.php">Directors</a></li>
-                <li class="visible-xs"><a href="genres.php">Genres</a></li>
-                <li class="visible-xs"><a href="studios.php">Studios</a></li>
-                <li role="presentation" class="dropdown hidden-xs">
+                <li role="presentation" class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                         More  <span class="caret"></span>
                     </a>
@@ -47,7 +44,7 @@
             </ul>
             <form id="searchForm" class="navbar-form navbar-right navbar-input-group" role="search" method="GET" action="search.php">
                 <div class="input-group">
-                    <input id="search-term" type="text" class="form-control" name="term" placeholder="Search Movies, Actors, ..." value="<?php if (!empty($_GET['term'])) echo $_GET['term']; ?>">
+                    <input id="search-term" type="text" class="form-control" name="term" placeholder="Search Movies, Actors, ..." value="<?php if (!empty($_GET['term'])) echo $_GET['term']; ?>" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                     <div class="input-group-btn">
                         <button id="nav-search" type="submit" class="btn btn-md btn-default" aria-label="Search">
                             <span class="glyphicon glyphicon-search"></span>
