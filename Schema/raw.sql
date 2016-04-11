@@ -13,7 +13,7 @@ CREATE TABLE movieUser (
    password           text NOT NULL,
    lastname           text NOT NULL,   
    firstname          text NOT NULL,
-   email              text NOT NULL UNIQUE,
+   email              text UNIQUE NOT NULL,
    city               text,
    province           text,
    country            text,
@@ -24,7 +24,7 @@ CREATE TABLE movieUser (
 CREATE TABLE profile (
    userID            int REFERENCES movieuser(userid) ON DELETE CASCADE,
    ageRange          int CHECK (ageRange = '[0,18)' OR ageRange = '[18,26)' OR ageRange = '[26,40)' or ageRange = '[40,)')
-   gender            text CHECK (gender = 'male' OR gender = 'female'),
+   gender            text CHECK (gender = 'male' OR gender = 'female' OR gender = 'other'),
    occupation        text,
    deviceUsed        text,
    PRIMARY KEY (userID)
@@ -32,8 +32,8 @@ CREATE TABLE profile (
 
 CREATE TABLE movie (
    movieID           SERIAL,
-   name              text,
-   dateReleased      int,
+   name              text NOT NULL,
+   dateReleased      int CHECK (dateReleased >= 1900 AND dateReleased <= 2100),
    posterUrl         text,
    PRIMARY KEY (movieID)
 );
@@ -42,13 +42,13 @@ CREATE TABLE watches (
    userID            int REFERENCES movieUser(userID) ON DELETE CASCADE,
    movieID           int REFERENCES movie(movieID) ON DELETE CASCADE,
    dateWatched       timestamp DEFAULT CURRENT_TIMESTAMP,   
-   rating            int CHECK (rating < 6),
+   rating            int CHECK (rating >= 1 AND rating <= 5),
    PRIMARY KEY (movieID,userID)
 );
 
 CREATE TABLE topics (
    topicID           SERIAL,
-   description       text,
+   description       text NOT NULL,
    PRIMARY KEY (topicId)
 );
 
@@ -63,7 +63,7 @@ CREATE TABLE movieTopics (
 
 CREATE TABLE studio (
    studioID          SERIAL,
-   name              text UNIQUE,  
+   name              text UNIQUE NOT NULL,  
    country           text,
    PRIMARY KEY (studioId)
 );
@@ -76,7 +76,7 @@ CREATE TABLE sponsors (
 
 CREATE TABLE director (
    directorID        SERIAL,
-   name              text UNIQUE,  
+   name              text UNIQUE NOT NULL,  
    dateOfBirth       date,
    PRIMARY KEY (directorId)
 ); 
@@ -89,7 +89,7 @@ CREATE TABLE directs (
 
 CREATE TABLE actor (
    actorID           SERIAL,
-   name              text UNIQUE,  
+   name              text UNIQUE NOT NULL,  
    dateOfBirth       date,
    PRIMARY KEY (actorId)
 );

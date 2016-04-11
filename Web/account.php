@@ -103,7 +103,7 @@ else if (isset($_POST['profile'])) {
                 }
             }
             else {
-                $insert = $db->query('INSERT INTO profile(userid, agerange, gender, occupation, deviceused) VALUES (:agerange, :gender, :occupation, :device)', array('agerange'=>$ageranges[$agerangeIndex]['value'],'gender'=>$gender,'occupation'=>$occupation,'device'=>$device));
+                $insert = $db->query('INSERT INTO profile(userid, agerange, gender, occupation, deviceused) VALUES (:userid, :agerange, :gender, :occupation, :device)', array('userid'=>$userid,'agerange'=>$ageranges[$agerangeIndex]['value'],'gender'=>$gender,'occupation'=>$occupation,'device'=>$device));
 
                 if ($insert > 0) {
                     $profileUpdated = true;
@@ -147,6 +147,15 @@ else if (isset($_POST['profile'])) {
 
     }
 
+} else if (isset($_POST['delete'])) {
+
+    $db->bind('userid',$userid);
+    $delete = $db->query('DELETE FROM movieuser WHERE userid = :userid');
+
+    if ($delete > 0) {
+        header('Location: index.php?logout=true');
+    }
+
 }
 
 $db->bind('userid',$userid);
@@ -155,6 +164,9 @@ $user = $db->row('SELECT lastname, firstname, password, email, city, province, c
 $db->bind('userid',$userid);
 $profile = $db->row('SELECT lower(agerange) AS lowerrange, upper(agerange) AS upperrange, gender, occupation, deviceused FROM profile WHERE userid = :userid');
 
+$gender = 'male';
+$occupation = '';
+$device = '';
 $agerange = 0;
 if (!empty($profile)) {
     switch ($profile['lowerrange']) {
@@ -518,6 +530,9 @@ function filterString($string, $maxLength) {
                             <div class="form-group">
                                 <input id="btn-save-account" type="submit" class="btn btn-success" name="account" value="Save" />
                             </div>
+                        </form>
+                        <form id="deleteAccountForm" class="pull-right" method="post" action="account.php" data-toggle="validator" role="form" onsubmit="return confirm('Do you really want to delete your account?');">
+                            <input class="btn btn-danger" type="submit" name="delete" value="Delete Account">
                         </form>
                     </div>
                 </div>
