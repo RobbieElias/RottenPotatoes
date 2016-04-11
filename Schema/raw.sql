@@ -1,5 +1,5 @@
 ﻿-- Put raw schema code here
-SET search_path TO 'test';
+SET search_path TO 'MovieRecommender';
 
 CREATE TABLE movieUser (
    userID             SERIAL,
