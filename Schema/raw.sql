@@ -1,12 +1,5 @@
 ﻿-- Put raw schema code here
-SET search_path TO 'MovieRecommender';
-
---Please comment out the drop tables instead of deleting
-DROP TABLE movieUser CASCADE;
-DROP TABLE profile;
-DROP TABLE movie CASCADE;
-DROP TABLE actorPlays CASCADE;
-DROP TABLE role CASCADE;
+SET search_path TO 'test';
 
 CREATE TABLE movieUser (
    userID             SERIAL,
@@ -17,13 +10,13 @@ CREATE TABLE movieUser (
    city               text,
    province           text,
    country            text,
-   CONSTRAINT proper_email CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
+   CONSTRAINT proper_email CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'),
    PRIMARY KEY (userID)
 );
 
 CREATE TABLE profile (
    userID            int REFERENCES movieuser(userid) ON DELETE CASCADE,
-   ageRange          int CHECK (ageRange = '[0,18)' OR ageRange = '[18,26)' OR ageRange = '[26,40)' or ageRange = '[40,)')
+   ageRange          int4range CHECK (ageRange = '[0,18)' OR ageRange = '[18,26)' OR ageRange = '[26,40)' or ageRange = '[40,)'),
    gender            text CHECK (gender = 'male' OR gender = 'female' OR gender = 'other'),
    occupation        text,
    deviceUsed        text,
@@ -100,7 +93,3 @@ CREATE TABLE actorPlays (
    role              text,
    PRIMARY KEY (actorId,movieID)
 );
-
-
-
-
