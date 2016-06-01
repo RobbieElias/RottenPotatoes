@@ -44,7 +44,7 @@ def createMovieTopics(movieID):
 
 
 # connect to the project database
-conn = psycopg2.connect(database="CSI2132", user="csi2132", password="csi2132", host="159.203.44.157", port="5432")
+conn = psycopg2.connect(database="CSI2132", user="csi2132", password="csi2132", host="127.0.0.1", port="5432")
 print "Opened database successfully"
 
 #fill the database for a movie
