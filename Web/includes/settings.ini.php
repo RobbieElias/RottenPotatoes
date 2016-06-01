@@ -1,6 +1,6 @@
 ;<?php return; ?>
 [SQL]
-host = 159.203.44.157
+host = 127.0.0.1
 user = csi2132
 password = csi2132
 dbname = CSI2132
